@@ -27,4 +27,8 @@
     {% if excerpt.note %}
         <p class="personal-note">{{ excerpt.note|nl2br }}</p>
     {% endif %}
+
+    <p class="admin-links">
+        <a href="{{ path('admin_excerpt_edit', { id: excerpt.id }) }}">Modifier</a>
+    </p>
 </article>

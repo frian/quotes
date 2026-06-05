@@ -68,7 +68,7 @@ class SongExcerptType extends AbstractType
                 ],
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Ajouter l’extrait',
+                'label' => $options['submit_label'],
             ]);
     }
 
@@ -76,6 +76,9 @@ class SongExcerptType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
+            'submit_label' => 'Ajouter l’extrait',
         ]);
+
+        $resolver->setAllowedTypes('submit_label', 'string');
     }
 }

@@ -1,0 +1,16 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.artistName) }}
+    {{ form_row(form.albumTitle) }}
+    {{ form_row(form.releaseYear) }}
+    {{ form_row(form.songTitle) }}
+    {{ form_row(form.body) }}
+    {{ form_row(form.position) }}
+    {{ form_row(form.tagNames) }}
+    {{ form_row(form.note) }}
+
+    <div class="form-actions">
+        {{ form_row(form.save) }}
+    </div>
+{{ form_end(form) }}
