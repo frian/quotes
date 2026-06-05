@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ album.title }}{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Album</p>
+        <h1>{{ album.title }}</h1>
+        <p class="page-subtitle">
+            <a href="{{ path('artist_show', { id: album.artist.id }) }}">{{ album.artist.name }}</a>
+            ·
+            <a href="{{ path('year_show', { year: album.releaseYear }) }}">{{ album.releaseYear }}</a>
+        </p>
+    </section>
+
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet album.' } %}
+{% endblock %}

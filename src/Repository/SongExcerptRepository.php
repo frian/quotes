@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Album;
 use App\Entity\Artist;
+use App\Entity\Song;
 use App\Entity\SongExcerpt;
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -81,6 +83,35 @@ class SongExcerptRepository extends ServiceEntityRepository
             ->addOrderBy('album.title', 'ASC')
             ->addOrderBy('song.title', 'ASC')
             ->addOrderBy('excerpt.position', 'ASC')
+            ->addOrderBy('excerpt.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return SongExcerpt[]
+     */
+    public function findByAlbum(Album $album): array
+    {
+        return $this->baseListQueryBuilder()
+            ->andWhere('album = :album')
+            ->setParameter('album', $album)
+            ->orderBy('song.title', 'ASC')
+            ->addOrderBy('excerpt.position', 'ASC')
+            ->addOrderBy('excerpt.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return SongExcerpt[]
+     */
+    public function findBySong(Song $song): array
+    {
+        return $this->baseListQueryBuilder()
+            ->andWhere('song = :song')
+            ->setParameter('song', $song)
+            ->orderBy('excerpt.position', 'ASC')
             ->addOrderBy('excerpt.id', 'ASC')
             ->getQuery()
             ->getResult();

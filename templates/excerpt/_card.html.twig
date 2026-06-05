@@ -4,10 +4,12 @@
     </blockquote>
 
     <footer class="excerpt-meta">
-        <a href="{{ path('excerpt_show', { id: excerpt.id }) }}">
+        <a href="{{ path('song_show', { id: excerpt.song.id }) }}">
             {{ excerpt.song.title }}
         </a>
-        <span>{{ excerpt.song.album.title }}</span>
+        <a href="{{ path('album_show', { id: excerpt.song.album.id }) }}">
+            {{ excerpt.song.album.title }}
+        </a>
         <a href="{{ path('artist_show', { id: excerpt.song.album.artist.id }) }}">
             {{ excerpt.song.album.artist.name }}
         </a>
@@ -29,6 +31,7 @@
     {% endif %}
 
     <p class="admin-links">
+        <a href="{{ path('excerpt_show', { id: excerpt.id }) }}">Permalien</a>
         <a href="{{ path('admin_excerpt_edit', { id: excerpt.id }) }}">Modifier</a>
     </p>
 </article>
