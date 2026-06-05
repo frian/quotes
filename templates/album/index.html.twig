@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Albums{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Albums</p>
+        <h1>Disques traversés par le carnet</h1>
+    </section>
+
+    {% if albums is empty %}
+        <p class="empty-state">Aucun album pour le moment.</p>
+    {% else %}
+        <div class="catalog-list">
+            {% for album in albums %}
+                <article>
+                    <h2><a href="{{ path('album_show', { id: album.id }) }}">{{ album.title }}</a></h2>
+                    <p>
+                        <a href="{{ path('artist_show', { id: album.artist.id }) }}">{{ album.artist.name }}</a>
+                        ·
+                        <a href="{{ path('year_show', { year: album.releaseYear }) }}">{{ album.releaseYear }}</a>
+                    </p>
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

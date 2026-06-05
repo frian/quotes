@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chansons{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Chansons</p>
+        <h1>Chansons dont une phrase est restée</h1>
+    </section>
+
+    {% if songs is empty %}
+        <p class="empty-state">Aucune chanson pour le moment.</p>
+    {% else %}
+        <div class="catalog-list">
+            {% for song in songs %}
+                <article>
+                    <h2><a href="{{ path('song_show', { id: song.id }) }}">{{ song.title }}</a></h2>
+                    <p>
+                        <a href="{{ path('album_show', { id: song.album.id }) }}">{{ song.album.title }}</a>
+                        ·
+                        <a href="{{ path('artist_show', { id: song.album.artist.id }) }}">{{ song.album.artist.name }}</a>
+                        ·
+                        <a href="{{ path('year_show', { year: song.album.releaseYear }) }}">{{ song.album.releaseYear }}</a>
+                    </p>
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

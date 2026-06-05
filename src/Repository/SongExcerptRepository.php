@@ -134,6 +134,35 @@ class SongExcerptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return SongExcerpt[]
+     */
+    public function search(string $term): array
+    {
+        $query = strtolower(trim($term));
+
+        if ($query === '') {
+            return [];
+        }
+
+        return $this->baseListQueryBuilder()
+            ->andWhere('LOWER(excerpt.body) LIKE :query')
+            ->orWhere('LOWER(excerpt.note) LIKE :query')
+            ->orWhere('LOWER(song.title) LIKE :query')
+            ->orWhere('LOWER(album.title) LIKE :query')
+            ->orWhere('LOWER(artist.name) LIKE :query')
+            ->orWhere('LOWER(tag.name) LIKE :query')
+            ->setParameter('query', '%'.$query.'%')
+            ->orderBy('artist.name', 'ASC')
+            ->addOrderBy('album.releaseYear', 'ASC')
+            ->addOrderBy('album.title', 'ASC')
+            ->addOrderBy('song.title', 'ASC')
+            ->addOrderBy('excerpt.position', 'ASC')
+            ->addOrderBy('excerpt.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     private function baseListQueryBuilder(): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('excerpt')

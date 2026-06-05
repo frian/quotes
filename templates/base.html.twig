@@ -22,13 +22,22 @@
         <header class="site-header">
             <a class="site-title" href="{{ path('home') }}">Carnet musical</a>
 
-            <nav class="site-nav" aria-label="Navigation principale">
-                <a href="{{ path('excerpt_index') }}">Extraits</a>
-                <a href="{{ path('tag_index') }}">Tags</a>
-                <a href="{{ path('artist_index') }}">Artistes</a>
-                <a href="{{ path('year_index') }}">Années</a>
-                <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
-            </nav>
+            <div class="site-tools">
+                <nav class="site-nav" aria-label="Navigation principale">
+                    <a href="{{ path('excerpt_index') }}">Extraits</a>
+                    <a href="{{ path('tag_index') }}">Tags</a>
+                    <a href="{{ path('artist_index') }}">Artistes</a>
+                    <a href="{{ path('album_index') }}">Albums</a>
+                    <a href="{{ path('song_index') }}">Chansons</a>
+                    <a href="{{ path('year_index') }}">Années</a>
+                    <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
+                </nav>
+
+                <form class="site-search" action="{{ path('search') }}" method="get">
+                    <label for="site_search_query">Recherche</label>
+                    <input id="site_search_query" name="q" type="search" value="{{ app.request.query.get('q') }}" autocomplete="off">
+                </form>
+            </div>
         </header>
 
         <main class="notebook-page">

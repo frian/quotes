@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Recherche</p>
+        <h1>Retrouver un fragment</h1>
+    </section>
+
+    <form class="search-page-form" action="{{ path('search') }}" method="get">
+        <label for="search_query">Recherche</label>
+        <div>
+            <input id="search_query" name="q" type="search" value="{{ query }}" autocomplete="off">
+            <button type="submit">Chercher</button>
+        </div>
+    </form>
+
+    {% if query is same as('') %}
+        <p class="empty-state">Saisis quelques mots pour chercher dans les extraits, chansons, albums, artistes et tags.</p>
+    {% else %}
+        {% include 'excerpt/_list.html.twig' with {
+            excerpts: excerpts,
+            empty_message: 'Aucun extrait trouvé pour « ' ~ query ~ ' ».'
+        } %}
+    {% endif %}
+{% endblock %}
