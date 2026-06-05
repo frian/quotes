@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/excerpts')]
 class ExcerptController extends AbstractController
 {
-    #[Route('', name: 'excerpt_index')]
+    #[Route('', name: 'excerpt_index', methods: ['GET'])]
     public function index(SongExcerptRepository $songExcerptRepository): Response
     {
         return $this->render('excerpt/index.html.twig', [
@@ -19,7 +19,7 @@ class ExcerptController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'excerpt_show', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'excerpt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(SongExcerpt $excerpt): Response
     {
         return $this->render('excerpt/show.html.twig', [

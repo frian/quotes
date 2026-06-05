@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/tags')]
 class TagController extends AbstractController
 {
-    #[Route('', name: 'tag_index')]
+    #[Route('', name: 'tag_index', methods: ['GET'])]
     public function index(TagRepository $tagRepository): Response
     {
         return $this->render('tag/index.html.twig', [
@@ -20,7 +20,7 @@ class TagController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'tag_show', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'tag_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Tag $tag, SongExcerptRepository $songExcerptRepository): Response
     {
         return $this->render('tag/show.html.twig', [

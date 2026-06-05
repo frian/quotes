@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/years')]
 class YearController extends AbstractController
 {
-    #[Route('', name: 'year_index')]
+    #[Route('', name: 'year_index', methods: ['GET'])]
     public function index(AlbumRepository $albumRepository): Response
     {
         return $this->render('year/index.html.twig', [
@@ -19,7 +19,7 @@ class YearController extends AbstractController
         ]);
     }
 
-    #[Route('/{year}', name: 'year_show', requirements: ['year' => '\d{4}'])]
+    #[Route('/{year}', name: 'year_show', requirements: ['year' => '\d{4}'], methods: ['GET'])]
     public function show(int $year, SongExcerptRepository $songExcerptRepository): Response
     {
         return $this->render('year/show.html.twig', [

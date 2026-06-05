@@ -27,10 +27,17 @@
                 <a href="{{ path('tag_index') }}">Tags</a>
                 <a href="{{ path('artist_index') }}">Artistes</a>
                 <a href="{{ path('year_index') }}">Années</a>
+                <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
             </nav>
         </header>
 
         <main class="notebook-page">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <p class="flash flash--{{ label }}">{{ message }}</p>
+                {% endfor %}
+            {% endfor %}
+
             {% block body %}{% endblock %}
         </main>
     </body>

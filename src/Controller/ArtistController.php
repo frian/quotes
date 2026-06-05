@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/artists')]
 class ArtistController extends AbstractController
 {
-    #[Route('', name: 'artist_index')]
+    #[Route('', name: 'artist_index', methods: ['GET'])]
     public function index(ArtistRepository $artistRepository): Response
     {
         return $this->render('artist/index.html.twig', [
@@ -20,7 +20,7 @@ class ArtistController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'artist_show', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'artist_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Artist $artist, SongExcerptRepository $songExcerptRepository): Response
     {
         return $this->render('artist/show.html.twig', [
