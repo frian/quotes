@@ -1,13 +1,29 @@
 {{ form_start(form) }}
     {{ form_errors(form) }}
 
-    {{ form_row(form.artistName) }}
-    {{ form_row(form.albumTitle) }}
-    {{ form_row(form.releaseYear) }}
+    <div class="form-fieldset">
+        <h2>Artiste</h2>
+        {{ form_row(form.artist) }}
+        {{ form_row(form.newArtistName) }}
+    </div>
+
+    <div class="form-fieldset">
+        <h2>Album</h2>
+        {{ form_row(form.album) }}
+        {{ form_row(form.newAlbumTitle) }}
+        {{ form_row(form.releaseYear) }}
+    </div>
+
     {{ form_row(form.songTitle) }}
     {{ form_row(form.body) }}
     {{ form_row(form.position) }}
-    {{ form_row(form.tagNames) }}
+
+    <div class="form-fieldset">
+        <h2>Tags</h2>
+        {{ form_row(form.tags) }}
+        {{ form_row(form.newTagNames) }}
+    </div>
+
     {{ form_row(form.note) }}
 
     <div class="form-actions">

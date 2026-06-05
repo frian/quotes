@@ -8,8 +8,13 @@ use App\Entity\Song;
 use App\Entity\SongExcerpt;
 use App\Entity\Tag;
 use App\Form\SongExcerptType;
+use App\Repository\AlbumRepository;
+use App\Repository\ArtistRepository;
+use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,23 +23,35 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminExcerptController extends AbstractController
 {
     #[Route('/new', name: 'admin_excerpt_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ArtistRepository $artistRepository,
+        AlbumRepository $albumRepository,
+        TagRepository $tagRepository,
+    ): Response
     {
-        $form = $this->createForm(SongExcerptType::class);
+        $form = $this->createForm(SongExcerptType::class, null, $this->createFormOptions(
+            $artistRepository,
+            $albumRepository,
+            $tagRepository,
+        ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var array<string, mixed> $data */
             $data = $form->getData();
 
-            $excerpt = new SongExcerpt();
-            $this->applyFormData($entityManager, $excerpt, $data);
-            $entityManager->persist($excerpt);
-            $entityManager->flush();
+            if ($this->validateSelectionData($form, $data)) {
+                $excerpt = new SongExcerpt();
+                $this->applyFormData($entityManager, $excerpt, $data);
+                $entityManager->persist($excerpt);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'L’extrait a été ajouté au carnet.');
+                $this->addFlash('success', 'L’extrait a été ajouté au carnet.');
 
-            return $this->redirectToRoute('excerpt_show', ['id' => $excerpt->getId()]);
+                return $this->redirectToRoute('excerpt_show', ['id' => $excerpt->getId()]);
+            }
         }
 
         return $this->render('admin/excerpt/new.html.twig', [
@@ -43,25 +60,39 @@ class AdminExcerptController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_excerpt_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(SongExcerpt $excerpt, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(
+        SongExcerpt $excerpt,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ArtistRepository $artistRepository,
+        AlbumRepository $albumRepository,
+        TagRepository $tagRepository,
+    ): Response
     {
-        $form = $this->createForm(SongExcerptType::class, $this->createFormData($excerpt), [
+        $form = $this->createForm(SongExcerptType::class, $this->createFormData($excerpt), $this->createFormOptions(
+            $artistRepository,
+            $albumRepository,
+            $tagRepository,
+            [
             'submit_label' => 'Mettre à jour l’extrait',
-        ]);
+            ],
+        ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var array<string, mixed> $data */
             $data = $form->getData();
 
-            $this->applyFormData($entityManager, $excerpt, $data);
-            $excerpt->setUpdatedAt(new \DateTimeImmutable());
+            if ($this->validateSelectionData($form, $data)) {
+                $this->applyFormData($entityManager, $excerpt, $data);
+                $excerpt->setUpdatedAt(new \DateTimeImmutable());
 
-            $entityManager->flush();
+                $entityManager->flush();
 
-            $this->addFlash('success', 'L’extrait a été mis à jour.');
+                $this->addFlash('success', 'L’extrait a été mis à jour.');
 
-            return $this->redirectToRoute('excerpt_show', ['id' => $excerpt->getId()]);
+                return $this->redirectToRoute('excerpt_show', ['id' => $excerpt->getId()]);
+            }
         }
 
         return $this->render('admin/excerpt/edit.html.twig', [
@@ -90,8 +121,7 @@ class AdminExcerptController extends AbstractController
      */
     private function applyFormData(EntityManagerInterface $entityManager, SongExcerpt $excerpt, array $data): void
     {
-        $artist = $this->findOrCreateArtist($entityManager, trim((string) $data['artistName']));
-        $album = $this->findOrCreateAlbum($entityManager, $artist, trim((string) $data['albumTitle']), (int) $data['releaseYear']);
+        $album = $this->resolveAlbum($entityManager, $data);
         $song = $this->findOrCreateSong($entityManager, $album, trim((string) $data['songTitle']));
 
         $excerpt
@@ -104,7 +134,13 @@ class AdminExcerptController extends AbstractController
             $excerpt->removeTag($tag);
         }
 
-        foreach ($this->parseTagNames((string) ($data['tagNames'] ?? '')) as $tagName) {
+        foreach ($data['tags'] ?? [] as $tag) {
+            if ($tag instanceof Tag) {
+                $excerpt->addTag($tag);
+            }
+        }
+
+        foreach ($this->parseTagNames((string) ($data['newTagNames'] ?? '')) as $tagName) {
             $excerpt->addTag($this->findOrCreateTag($entityManager, $tagName));
         }
     }
@@ -119,15 +155,98 @@ class AdminExcerptController extends AbstractController
         $artist = $album?->getArtist();
 
         return [
-            'artistName' => $artist?->getName(),
-            'albumTitle' => $album?->getTitle(),
+            'artist' => $artist,
+            'newArtistName' => null,
+            'album' => $album,
+            'newAlbumTitle' => null,
             'releaseYear' => $album?->getReleaseYear(),
             'songTitle' => $song?->getTitle(),
             'body' => $excerpt->getBody(),
             'position' => $excerpt->getPosition(),
-            'tagNames' => implode(', ', $excerpt->getTags()->map(static fn (Tag $tag): string => $tag->getName() ?? '')->toArray()),
+            'tags' => $excerpt->getTags()->toArray(),
+            'newTagNames' => null,
             'note' => $excerpt->getNote(),
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $extraOptions
+     *
+     * @return array<string, mixed>
+     */
+    private function createFormOptions(
+        ArtistRepository $artistRepository,
+        AlbumRepository $albumRepository,
+        TagRepository $tagRepository,
+        array $extraOptions = [],
+    ): array {
+        return array_replace([
+            'albums' => $albumRepository->findAllOrderedByArtistAndTitle(),
+            'artists' => $artistRepository->findAllOrderedByName(),
+            'tags' => $tagRepository->findAllOrderedByName(),
+        ], $extraOptions);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function validateSelectionData(FormInterface $form, array $data): bool
+    {
+        $hasExistingAlbum = ($data['album'] ?? null) instanceof Album;
+        $newAlbumTitle = trim((string) ($data['newAlbumTitle'] ?? ''));
+        $hasNewAlbum = $newAlbumTitle !== '';
+
+        if (!$hasExistingAlbum && !$hasNewAlbum) {
+            $form->get('album')->addError(new FormError('Choisis un album existant ou renseigne un autre album.'));
+        }
+
+        if ($hasNewAlbum) {
+            $hasExistingArtist = ($data['artist'] ?? null) instanceof Artist;
+            $hasNewArtist = trim((string) ($data['newArtistName'] ?? '')) !== '';
+
+            if (!$hasExistingArtist && !$hasNewArtist) {
+                $form->get('artist')->addError(new FormError('Choisis un artiste existant ou renseigne un autre artiste.'));
+            }
+
+            if ($data['releaseYear'] === null) {
+                $form->get('releaseYear')->addError(new FormError('Renseigne l’année du nouvel album.'));
+            }
+        }
+
+        return $form->isValid();
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function resolveAlbum(EntityManagerInterface $entityManager, array $data): Album
+    {
+        $newAlbumTitle = trim((string) ($data['newAlbumTitle'] ?? ''));
+
+        if ($newAlbumTitle === '' && ($data['album'] ?? null) instanceof Album) {
+            return $data['album'];
+        }
+
+        $artist = $this->resolveArtist($entityManager, $data);
+
+        return $this->findOrCreateAlbum($entityManager, $artist, $newAlbumTitle, (int) $data['releaseYear']);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function resolveArtist(EntityManagerInterface $entityManager, array $data): Artist
+    {
+        $newArtistName = trim((string) ($data['newArtistName'] ?? ''));
+
+        if ($newArtistName !== '') {
+            return $this->findOrCreateArtist($entityManager, $newArtistName);
+        }
+
+        /** @var Artist $artist */
+        $artist = $data['artist'];
+
+        return $artist;
     }
 
     private function findOrCreateArtist(EntityManagerInterface $entityManager, string $name): Artist

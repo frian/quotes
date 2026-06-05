@@ -243,6 +243,24 @@ h1 {
     gap: 1rem;
 }
 
+.form-fieldset {
+    display: grid;
+    gap: 1rem;
+    margin: 0 0 0.5rem;
+    padding: 1rem;
+    background: rgba(237, 242, 238, 0.45);
+    border: 1px solid rgba(216, 208, 196, 0.7);
+}
+
+.form-fieldset h2 {
+    margin: 0;
+    color: var(--color-accent);
+    font-family: var(--font-ui);
+    font-size: 0.86rem;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
 .form-panel label {
     display: block;
     margin-bottom: 0.35rem;
@@ -252,6 +270,7 @@ h1 {
 }
 
 .form-panel input,
+.form-panel select,
 .form-panel textarea {
     width: 100%;
     padding: 0.75rem 0.85rem;
@@ -267,9 +286,33 @@ h1 {
 }
 
 .form-panel input:focus,
+.form-panel select:focus,
 .form-panel textarea:focus {
     outline: 2px solid rgba(36, 79, 116, 0.22);
     outline-offset: 2px;
+}
+
+.form-panel input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.form-panel input[type="checkbox"] + label {
+    display: inline;
+    margin: 0;
+    color: var(--color-ink);
+}
+
+.form-panel div[id$="_tags"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+}
+
+.form-panel div[id$="_tags"] > div {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 .form-panel .help-text {

@@ -2,6 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Album;
+use App\Entity\Artist;
+use App\Entity\Tag;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,22 +21,38 @@ class SongExcerptType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('artistName', TextType::class, [
+            ->add('artist', EntityType::class, [
                 'label' => 'Artiste ou groupe',
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                'class' => Artist::class,
+                'choices' => $options['artists'],
+                'choice_label' => 'name',
+                'placeholder' => 'Choisir un artiste existant',
+                'required' => false,
             ])
-            ->add('albumTitle', TextType::class, [
+            ->add('newArtistName', TextType::class, [
+                'label' => 'Autre artiste ou groupe',
+                'required' => false,
+            ])
+            ->add('album', EntityType::class, [
                 'label' => 'Album',
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                'class' => Album::class,
+                'choices' => $options['albums'],
+                'choice_label' => static function (Album $album): string {
+                    $artistName = $album->getArtist()?->getName();
+
+                    return sprintf('%s - %s (%d)', $artistName, $album->getTitle(), $album->getReleaseYear());
+                },
+                'placeholder' => 'Choisir un album existant',
+                'required' => false,
+            ])
+            ->add('newAlbumTitle', TextType::class, [
+                'label' => 'Autre album',
+                'required' => false,
             ])
             ->add('releaseYear', IntegerType::class, [
-                'label' => 'Année',
+                'label' => 'Année du nouvel album',
+                'required' => false,
                 'constraints' => [
-                    new NotBlank(),
                     new Range(min: 1900, max: 2100),
                 ],
             ])
@@ -55,10 +75,19 @@ class SongExcerptType extends AbstractType
                 'label' => 'Position',
                 'required' => false,
             ])
-            ->add('tagNames', TextType::class, [
+            ->add('tags', EntityType::class, [
                 'label' => 'Tags',
+                'class' => Tag::class,
+                'choices' => $options['tags'],
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
                 'required' => false,
-                'help' => 'Sépare les tags par des virgules.',
+            ])
+            ->add('newTagNames', TextType::class, [
+                'label' => 'Ajouter tag',
+                'required' => false,
+                'help' => 'Tu peux ajouter plusieurs tags avec des virgules.',
             ])
             ->add('note', TextareaType::class, [
                 'label' => 'Note personnelle',
@@ -75,10 +104,16 @@ class SongExcerptType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'albums' => [],
+            'artists' => [],
             'data_class' => null,
             'submit_label' => 'Ajouter l’extrait',
+            'tags' => [],
         ]);
 
+        $resolver->setAllowedTypes('albums', 'array');
+        $resolver->setAllowedTypes('artists', 'array');
         $resolver->setAllowedTypes('submit_label', 'string');
+        $resolver->setAllowedTypes('tags', 'array');
     }
 }

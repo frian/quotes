@@ -29,4 +29,19 @@ class AlbumRepository extends ServiceEntityRepository
 
         return array_map(static fn (array $row): int => (int) $row['releaseYear'], $rows);
     }
+
+    /**
+     * @return Album[]
+     */
+    public function findAllOrderedByArtistAndTitle(): array
+    {
+        return $this->createQueryBuilder('album')
+            ->join('album.artist', 'artist')
+            ->addSelect('artist')
+            ->orderBy('artist.name', 'ASC')
+            ->addOrderBy('album.releaseYear', 'ASC')
+            ->addOrderBy('album.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
