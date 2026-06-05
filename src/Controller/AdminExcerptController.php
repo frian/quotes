@@ -88,6 +88,7 @@ class AdminExcerptController extends AbstractController
                 $excerpt->setUpdatedAt(new \DateTimeImmutable());
 
                 $entityManager->flush();
+                $this->cleanupUnusedCatalogEntities($entityManager);
 
                 $this->addFlash('success', 'L’extrait a été mis à jour.');
 
@@ -110,6 +111,7 @@ class AdminExcerptController extends AbstractController
 
         $entityManager->remove($excerpt);
         $entityManager->flush();
+        $this->cleanupUnusedCatalogEntities($entityManager);
 
         $this->addFlash('success', 'L’extrait a été supprimé.');
 
@@ -317,6 +319,63 @@ class AdminExcerptController extends AbstractController
         $entityManager->persist($tag);
 
         return $tag;
+    }
+
+    private function cleanupUnusedCatalogEntities(EntityManagerInterface $entityManager): void
+    {
+        $unusedTags = $entityManager->getRepository(Tag::class)
+            ->createQueryBuilder('tag')
+            ->leftJoin('tag.excerpts', 'excerpt')
+            ->groupBy('tag.id')
+            ->having('COUNT(excerpt.id) = 0')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($unusedTags as $tag) {
+            $entityManager->remove($tag);
+        }
+
+        $unusedSongs = $entityManager->getRepository(Song::class)
+            ->createQueryBuilder('song')
+            ->leftJoin('song.excerpts', 'excerpt')
+            ->groupBy('song.id')
+            ->having('COUNT(excerpt.id) = 0')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($unusedSongs as $song) {
+            $entityManager->remove($song);
+        }
+
+        $entityManager->flush();
+
+        $unusedAlbums = $entityManager->getRepository(Album::class)
+            ->createQueryBuilder('album')
+            ->leftJoin('album.songs', 'song')
+            ->groupBy('album.id')
+            ->having('COUNT(song.id) = 0')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($unusedAlbums as $album) {
+            $entityManager->remove($album);
+        }
+
+        $entityManager->flush();
+
+        $unusedArtists = $entityManager->getRepository(Artist::class)
+            ->createQueryBuilder('artist')
+            ->leftJoin('artist.albums', 'album')
+            ->groupBy('artist.id')
+            ->having('COUNT(album.id) = 0')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($unusedArtists as $artist) {
+            $entityManager->remove($artist);
+        }
+
+        $entityManager->flush();
     }
 
     /**
