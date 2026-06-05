@@ -15,4 +15,15 @@ class TagRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tag::class);
     }
+
+    /**
+     * @return Tag[]
+     */
+    public function findAllOrderedByName(): array
+    {
+        return $this->createQueryBuilder('tag')
+            ->orderBy('tag.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Tag</p>
+        <h1>{{ tag.name }}</h1>
+    </section>
+
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à ce tag.' } %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Artistes{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Artistes</p>
+        <h1>Voix, groupes et présences du carnet</h1>
+    </section>
+
+    {% if artists is empty %}
+        <p class="empty-state">Aucun artiste pour le moment.</p>
+    {% else %}
+        <nav class="index-list" aria-label="Liste des artistes">
+            {% for artist in artists %}
+                <a href="{{ path('artist_show', { id: artist.id }) }}">{{ artist.name }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tags{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Tags</p>
+        <h1>Entrées par sensation, thème ou souvenir</h1>
+    </section>
+
+    {% if tags is empty %}
+        <p class="empty-state">Aucun tag pour le moment.</p>
+    {% else %}
+        <nav class="index-list" aria-label="Liste des tags">
+            {% for tag in tags %}
+                <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+{% endblock %}

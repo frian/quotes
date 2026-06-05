@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Années{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Années</p>
+        <h1>Le carnet par millésimes</h1>
+    </section>
+
+    {% if years is empty %}
+        <p class="empty-state">Aucune année pour le moment.</p>
+    {% else %}
+        <nav class="index-list index-list--years" aria-label="Liste des années">
+            {% for year in years %}
+                <a href="{{ path('year_show', { year: year }) }}">{{ year }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+{% endblock %}

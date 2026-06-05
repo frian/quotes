@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tous les extraits{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Extraits</p>
+        <h1>Toutes les pages du carnet</h1>
+    </section>
+
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait pour le moment.' } %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% if excerpts is empty %}
+    <p class="empty-state">{{ empty_message }}</p>
+{% else %}
+    <div class="excerpt-list">
+        {% for excerpt in excerpts %}
+            {% include 'excerpt/_card.html.twig' with { excerpt: excerpt } %}
+        {% endfor %}
+    </div>
+{% endif %}

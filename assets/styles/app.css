@@ -1,3 +1,222 @@
+:root {
+    --color-paper: #fbfaf5;
+    --color-page: #fffdf8;
+    --color-ink: #26231f;
+    --color-muted: #6e6860;
+    --color-rule: #d8d0c4;
+    --color-accent: #6d2d3b;
+    --color-link: #244f74;
+    --color-soft: #edf2ee;
+    --font-body: Georgia, "Times New Roman", serif;
+    --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --page-width: 860px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    color: var(--color-ink);
+    background:
+        linear-gradient(90deg, rgba(36, 79, 116, 0.06) 1px, transparent 1px) 0 0 / 2.75rem 2.75rem,
+        var(--color-paper);
+    font-family: var(--font-body);
+}
+
 body {
-    background-color: skyblue;
+    margin: 0;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+}
+
+a:hover {
+    color: var(--color-accent);
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 1rem;
+    font-family: var(--font-ui);
+}
+
+.site-title {
+    color: var(--color-ink);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    font-size: 0.95rem;
+}
+
+.site-nav a {
+    color: var(--color-muted);
+    text-decoration: none;
+}
+
+.site-nav a:hover {
+    color: var(--color-accent);
+}
+
+.notebook-page {
+    max-width: var(--page-width);
+    margin: 0 auto 4rem;
+    padding: 2rem 1.25rem 4rem;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 2.35rem,
+            rgba(36, 79, 116, 0.12) 2.4rem
+        ),
+        var(--color-page);
+    border: 1px solid rgba(110, 104, 96, 0.18);
+    box-shadow: 0 1.5rem 4rem rgba(38, 35, 31, 0.08);
+}
+
+.page-intro {
+    margin-bottom: 2.5rem;
+}
+
+.eyebrow {
+    margin: 0 0 0.45rem;
+    color: var(--color-accent);
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+h1 {
+    max-width: 12em;
+    margin: 0;
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.excerpt-list {
+    display: grid;
+    gap: 2rem;
+}
+
+.excerpt-card {
+    padding: 0 0 1.75rem;
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.excerpt-card:last-child {
+    border-bottom: 0;
+}
+
+.excerpt-body {
+    margin: 0;
+    max-width: 34rem;
+    font-size: clamp(1.35rem, 4vw, 2rem);
+    line-height: 1.55;
+    white-space: normal;
+}
+
+.excerpt-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+    margin-top: 1rem;
+    color: var(--color-muted);
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+}
+
+.excerpt-meta > *::after {
+    content: "/";
+    margin-left: 0.7rem;
+    color: var(--color-rule);
+}
+
+.excerpt-meta > *:last-child::after {
+    content: "";
+    margin: 0;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-family: var(--font-ui);
+}
+
+.tag-list a,
+.index-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25rem 0.65rem;
+    color: var(--color-link);
+    background: var(--color-soft);
+    border: 1px solid rgba(36, 79, 116, 0.12);
+    border-radius: 999px;
+    text-decoration: none;
+}
+
+.tag-list a:hover,
+.index-list a:hover {
+    color: var(--color-accent);
+    border-color: rgba(109, 45, 59, 0.25);
+}
+
+.personal-note {
+    max-width: 34rem;
+    margin: 1rem 0 0;
+    padding-left: 1rem;
+    color: var(--color-muted);
+    border-left: 3px solid var(--color-rule);
+    font-style: italic;
+    line-height: 1.65;
+}
+
+.index-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-family: var(--font-ui);
+}
+
+.index-list--years a {
+    min-width: 4.5rem;
+    justify-content: center;
+}
+
+.empty-state {
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-ui);
+}
+
+@media (max-width: 680px) {
+    .site-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .notebook-page {
+        margin-bottom: 0;
+        border-right: 0;
+        border-left: 0;
+    }
 }

@@ -15,4 +15,18 @@ class AlbumRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Album::class);
     }
+
+    /**
+     * @return int[]
+     */
+    public function findReleaseYears(): array
+    {
+        $rows = $this->createQueryBuilder('album')
+            ->select('DISTINCT album.releaseYear AS releaseYear')
+            ->orderBy('album.releaseYear', 'DESC')
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_map(static fn (array $row): int => (int) $row['releaseYear'], $rows);
+    }
 }

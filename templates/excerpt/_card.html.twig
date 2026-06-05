@@ -1,0 +1,30 @@
+<article class="excerpt-card">
+    <blockquote class="excerpt-body">
+        {{ excerpt.body|nl2br }}
+    </blockquote>
+
+    <footer class="excerpt-meta">
+        <a href="{{ path('excerpt_show', { id: excerpt.id }) }}">
+            {{ excerpt.song.title }}
+        </a>
+        <span>{{ excerpt.song.album.title }}</span>
+        <a href="{{ path('artist_show', { id: excerpt.song.album.artist.id }) }}">
+            {{ excerpt.song.album.artist.name }}
+        </a>
+        <a href="{{ path('year_show', { year: excerpt.song.album.releaseYear }) }}">
+            {{ excerpt.song.album.releaseYear }}
+        </a>
+    </footer>
+
+    {% if excerpt.tags is not empty %}
+        <nav class="tag-list" aria-label="Tags de l’extrait">
+            {% for tag in excerpt.tags %}
+                <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+
+    {% if excerpt.note %}
+        <p class="personal-note">{{ excerpt.note|nl2br }}</p>
+    {% endif %}
+</article>

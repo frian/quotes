@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Extrait #{{ excerpt.id }}{% endblock %}
+
+{% block body %}
+    {% include 'excerpt/_card.html.twig' with { excerpt: excerpt } %}
+{% endblock %}
