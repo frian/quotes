@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_artist_name', fields: ['name'])]
 class Artist
 {
     #[ORM\Id]
