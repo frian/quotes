@@ -6,20 +6,21 @@
     <section class="page-intro">
         <p class="eyebrow">Chansons</p>
         <h1>Chansons dont une phrase est restée</h1>
+        <p class="page-subtitle">{{ songs|length }} chanson{{ songs|length > 1 ? 's' : '' }} avec extrait.</p>
     </section>
 
     {% if songs is empty %}
         <p class="empty-state">Aucune chanson pour le moment.</p>
     {% else %}
-        <div class="catalog-list">
+        <div class="catalog-list catalog-list--cards">
             {% for song in songs %}
-                <article>
+                <article class="catalog-card">
                     <h2><a href="{{ path('song_show', { id: song.id }) }}">{{ song.title }}</a></h2>
-                    <p>
+                    <p class="catalog-card__meta">
                         <a href="{{ path('album_show', { id: song.album.id }) }}">{{ song.album.title }}</a>
-                        ·
+                        <span aria-hidden="true">·</span>
                         <a href="{{ path('artist_show', { id: song.album.artist.id }) }}">{{ song.album.artist.name }}</a>
-                        ·
+                        <span aria-hidden="true">·</span>
                         <a href="{{ path('year_show', { year: song.album.releaseYear }) }}">{{ song.album.releaseYear }}</a>
                     </p>
                 </article>

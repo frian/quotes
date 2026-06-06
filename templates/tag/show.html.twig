@@ -3,10 +3,12 @@
 {% block title %}{{ tag.name }}{% endblock %}
 
 {% block body %}
-    <section class="page-intro">
-        <p class="eyebrow">Tag</p>
-        <h1>{{ tag.name }}</h1>
-    </section>
+    {% include '_detail_intro.html.twig' with {
+        eyebrow: 'Tag',
+        title: tag.name,
+        count: excerpts|length,
+        summary: 'Tous les extraits marqués par ce tag.',
+    } %}
 
     {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à ce tag.' } %}
 {% endblock %}

@@ -3,5 +3,19 @@
 {% block title %}Extrait #{{ excerpt.id }}{% endblock %}
 
 {% block body %}
-    {% include 'excerpt/_card.html.twig' with { excerpt: excerpt } %}
+    {% include '_detail_intro.html.twig' with {
+        eyebrow: 'Extrait',
+        title: 'Une ligne retenue',
+        summary: 'Un passage noté dans le carnet, avec son contexte musical.',
+        links: [
+            { label: excerpt.song.title, url: path('song_show', { id: excerpt.song.id }) },
+            { label: excerpt.song.album.title, url: path('album_show', { id: excerpt.song.album.id }) },
+            { label: excerpt.song.album.artist.name, url: path('artist_show', { id: excerpt.song.album.artist.id }) },
+            { label: excerpt.song.album.releaseYear, url: path('year_show', { year: excerpt.song.album.releaseYear }) }
+        ]
+    } %}
+
+    <section class="detail-reading">
+        {% include 'excerpt/_card.html.twig' with { excerpt: excerpt, variant: 'feature' } %}
+    </section>
 {% endblock %}

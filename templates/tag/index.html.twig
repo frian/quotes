@@ -6,6 +6,7 @@
     <section class="page-intro">
         <p class="eyebrow">Tags</p>
         <h1>Entrées par sensation, thème ou souvenir</h1>
+        <p class="page-subtitle">{{ tags|length }} tag{{ tags|length > 1 ? 's' : '' }} dans le carnet.</p>
     </section>
 
     {% if tags is empty %}

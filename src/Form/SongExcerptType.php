@@ -29,10 +29,20 @@ class SongExcerptType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choisir un artiste existant',
                 'required' => false,
+                'attr' => [
+                    'data-excerpt-form-target' => 'artistInput',
+                ],
+                'row_attr' => [
+                    'data-excerpt-form-target' => 'artistRow',
+                ],
             ])
             ->add('newArtistName', TextType::class, [
                 'label' => 'Autre artiste ou groupe',
                 'required' => false,
+                'help' => 'Les variantes déjà enregistrées sont réutilisées automatiquement.',
+                'row_attr' => [
+                    'data-excerpt-form-target' => 'newArtistRow',
+                ],
             ])
             ->add('album', EntityType::class, [
                 'label' => 'Album',
@@ -45,10 +55,21 @@ class SongExcerptType extends AbstractType
                 },
                 'placeholder' => 'Choisir un album existant',
                 'required' => false,
+                'attr' => [
+                    'data-excerpt-form-target' => 'albumSelect',
+                    'data-action' => 'change->excerpt-form#sync input->excerpt-form#sync',
+                ],
+                'row_attr' => [
+                    'data-excerpt-form-target' => 'albumRow',
+                ],
             ])
             ->add('newAlbumTitle', TextType::class, [
                 'label' => 'Autre album',
                 'required' => false,
+                'help' => 'Même artiste + titre + année = album existant.',
+                'row_attr' => [
+                    'data-excerpt-form-target' => 'newAlbumRow',
+                ],
             ])
             ->add('releaseYear', IntegerType::class, [
                 'label' => 'Année du nouvel album',
@@ -56,9 +77,13 @@ class SongExcerptType extends AbstractType
                 'constraints' => [
                     new Range(min: 1900, max: 2100),
                 ],
+                'row_attr' => [
+                    'data-excerpt-form-target' => 'releaseYearRow',
+                ],
             ])
             ->add('songTitle', TextType::class, [
                 'label' => 'Chanson',
+                'help' => 'La chanson est réutilisée si elle existe déjà dans cet album.',
                 'constraints' => [
                     new NotBlank(),
                 ],

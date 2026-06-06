@@ -26,4 +26,20 @@ class TagRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Tag[]
+     */
+    public function findMostUsed(int $limit = 8): array
+    {
+        return $this->createQueryBuilder('tag')
+            ->addSelect('COUNT(excerpt.id) AS HIDDEN excerptCount')
+            ->leftJoin('tag.excerpts', 'excerpt')
+            ->groupBy('tag.id')
+            ->orderBy('excerptCount', 'DESC')
+            ->addOrderBy('tag.name', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

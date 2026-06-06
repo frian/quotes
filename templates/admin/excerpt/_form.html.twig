@@ -1,14 +1,24 @@
-{{ form_start(form) }}
+{{ form_start(form, { attr: { 'data-controller': 'excerpt-form' } }) }}
     {{ form_errors(form) }}
+
+    <p class="form-intro" data-excerpt-form-target="reuseSummary">
+        Ce formulaire réutilise automatiquement les artistes, albums, chansons et tags déjà enregistrés.
+    </p>
 
     <div class="form-fieldset">
         <h2>Artiste</h2>
+        <p class="form-hint" data-excerpt-form-target="artistHint">
+            Utilisé seulement si tu crées un nouvel album.
+        </p>
         {{ form_row(form.artist) }}
         {{ form_row(form.newArtistName) }}
     </div>
 
     <div class="form-fieldset">
         <h2>Album</h2>
+        <p class="form-hint" data-excerpt-form-target="albumHint">
+            Choisir un album existant remplit automatiquement l’artiste et l’année.
+        </p>
         {{ form_row(form.album) }}
         {{ form_row(form.newAlbumTitle) }}
         {{ form_row(form.releaseYear) }}

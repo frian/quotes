@@ -3,10 +3,16 @@
 {% block title %}{{ artist.name }}{% endblock %}
 
 {% block body %}
-    <section class="page-intro">
-        <p class="eyebrow">Artiste</p>
-        <h1>{{ artist.name }}</h1>
-    </section>
+    {% include '_detail_intro.html.twig' with {
+        eyebrow: 'Artiste',
+        title: artist.name,
+        count: excerpts|length,
+        summary: 'Dans le carnet, les extraits associés à cet artiste.',
+        links: artist.albums|map(album => {
+            label: album.title ~ ' · ' ~ album.releaseYear,
+            url: path('album_show', { id: album.id })
+        })
+    } %}
 
     {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet artiste.' } %}
 {% endblock %}

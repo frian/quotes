@@ -3,10 +3,12 @@
 {% block title %}{{ year }}{% endblock %}
 
 {% block body %}
-    <section class="page-intro">
-        <p class="eyebrow">Année</p>
-        <h1>{{ year }}</h1>
-    </section>
+    {% include '_detail_intro.html.twig' with {
+        eyebrow: 'Année',
+        title: year,
+        count: excerpts|length,
+        summary: 'Les extraits liés aux albums sortis cette année-là.',
+    } %}
 
     {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette année.' } %}
 {% endblock %}

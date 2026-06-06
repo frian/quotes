@@ -6,6 +6,7 @@
     <section class="page-intro">
         <p class="eyebrow">Artistes</p>
         <h1>Voix, groupes et présences du carnet</h1>
+        <p class="page-subtitle">{{ artists|length }} artiste{{ artists|length > 1 ? 's' : '' }} à parcourir.</p>
     </section>
 
     {% if artists is empty %}

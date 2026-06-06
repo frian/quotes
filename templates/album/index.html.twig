@@ -6,18 +6,19 @@
     <section class="page-intro">
         <p class="eyebrow">Albums</p>
         <h1>Disques traversés par le carnet</h1>
+        <p class="page-subtitle">{{ albums|length }} album{{ albums|length > 1 ? 's' : '' }} à ouvrir.</p>
     </section>
 
     {% if albums is empty %}
         <p class="empty-state">Aucun album pour le moment.</p>
     {% else %}
-        <div class="catalog-list">
+        <div class="catalog-list catalog-list--cards">
             {% for album in albums %}
-                <article>
+                <article class="catalog-card">
                     <h2><a href="{{ path('album_show', { id: album.id }) }}">{{ album.title }}</a></h2>
-                    <p>
+                    <p class="catalog-card__meta">
                         <a href="{{ path('artist_show', { id: album.artist.id }) }}">{{ album.artist.name }}</a>
-                        ·
+                        <span aria-hidden="true">·</span>
                         <a href="{{ path('year_show', { year: album.releaseYear }) }}">{{ album.releaseYear }}</a>
                     </p>
                 </article>

@@ -1,4 +1,4 @@
-<article class="excerpt-card">
+<article class="excerpt-card{% if variant is defined and variant %} excerpt-card--{{ variant }}{% endif %}">
     <blockquote class="excerpt-body">
         {{ excerpt.body|nl2br }}
     </blockquote>
@@ -30,7 +30,10 @@
     {% endif %}
 
     {% if excerpt.note %}
-        <p class="personal-note">{{ excerpt.note|nl2br }}</p>
+        <p class="personal-note">
+            <span class="personal-note__label">Note personnelle</span>
+            {{ excerpt.note|nl2br }}
+        </p>
     {% endif %}
 
     <p class="admin-links">

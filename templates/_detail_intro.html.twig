@@ -1,0 +1,27 @@
+<section class="page-intro detail-intro">
+    <p class="eyebrow">{{ eyebrow }}</p>
+
+    <div class="detail-intro__heading">
+        <h1>{{ title }}</h1>
+
+        {% if count is defined and count is not null %}
+            <p class="detail-intro__count">
+                {{ count }} extrait{{ count > 1 ? 's' : '' }}
+            </p>
+        {% endif %}
+    </div>
+
+    {% if summary is defined and summary %}
+        <p class="page-subtitle">{{ summary }}</p>
+    {% endif %}
+
+    {% if links is defined and links is not empty %}
+        <nav class="detail-links" aria-label="{{ links_label|default('Liens associés') }}">
+            {% for link in links %}
+                <a href="{{ link.url }}" {% if link.external|default(false) %}rel="noopener noreferrer" target="_blank"{% endif %}>
+                    {{ link.label }}
+                </a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+</section>

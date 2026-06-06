@@ -3,21 +3,18 @@
 {% block title %}{{ song.title }}{% endblock %}
 
 {% block body %}
-    <section class="page-intro">
-        <p class="eyebrow">Chanson</p>
-        <h1>{{ song.title }}</h1>
-        <p class="page-subtitle">
-            <a href="{{ path('album_show', { id: song.album.id }) }}">{{ song.album.title }}</a>
-            ·
-            <a href="{{ path('artist_show', { id: song.album.artist.id }) }}">{{ song.album.artist.name }}</a>
-            ·
-            <a href="{{ path('year_show', { year: song.album.releaseYear }) }}">{{ song.album.releaseYear }}</a>
-            {% if song.sourceUrl %}
-                ·
-                <a href="{{ song.sourceUrl }}" rel="noopener noreferrer" target="_blank">Écouter</a>
-            {% endif %}
-        </p>
-    </section>
+    {% include '_detail_intro.html.twig' with {
+        eyebrow: 'Chanson',
+        title: song.title,
+        count: excerpts|length,
+        summary: 'Une chanson, son album, son artiste et ses extraits accumulés au fil du temps.',
+        links: [
+            { label: song.album.title, url: path('album_show', { id: song.album.id }) },
+            { label: song.album.artist.name, url: path('artist_show', { id: song.album.artist.id }) },
+            { label: song.album.releaseYear, url: path('year_show', { year: song.album.releaseYear }) },
+            { label: 'Écouter', url: song.sourceUrl, external: true, hidden: song.sourceUrl is empty }
+        ]|filter(link => link.hidden is not defined or not link.hidden)
+    } %}
 
     {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette chanson.' } %}
 {% endblock %}

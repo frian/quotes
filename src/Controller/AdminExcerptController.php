@@ -44,7 +44,7 @@ class AdminExcerptController extends AbstractController
             /** @var array<string, mixed> $data */
             $data = $form->getData();
 
-            if ($this->validateSelectionData($form, $data)) {
+            if ($this->validateSelectionData($form, $entityManager, $data)) {
                 $excerpt = new SongExcerpt();
                 $this->applyFormData($entityManager, $excerpt, $data);
                 $entityManager->persist($excerpt);
@@ -85,7 +85,7 @@ class AdminExcerptController extends AbstractController
             /** @var array<string, mixed> $data */
             $data = $form->getData();
 
-            if ($this->validateSelectionData($form, $data)) {
+            if ($this->validateSelectionData($form, $entityManager, $data)) {
                 $this->applyFormData($entityManager, $excerpt, $data);
                 $excerpt->setUpdatedAt(new \DateTimeImmutable());
 
@@ -197,11 +197,16 @@ class AdminExcerptController extends AbstractController
     /**
      * @param array<string, mixed> $data
      */
-    private function validateSelectionData(FormInterface $form, array $data): bool
+    private function validateSelectionData(FormInterface $form, EntityManagerInterface $entityManager, array $data): bool
     {
         $hasExistingAlbum = ($data['album'] ?? null) instanceof Album;
-        $newAlbumTitle = trim((string) ($data['newAlbumTitle'] ?? ''));
+        $newAlbumTitle = $this->normalizeCatalogText($data['newAlbumTitle'] ?? null);
         $hasNewAlbum = $newAlbumTitle !== '';
+        $existingAlbum = null;
+
+        if ($hasExistingAlbum && $hasNewAlbum) {
+            $form->get('album')->addError(new FormError('Choisis un album existant ou renseigne un nouvel album, pas les deux.'));
+        }
 
         if (!$hasExistingAlbum && !$hasNewAlbum) {
             $form->get('album')->addError(new FormError('Choisis un album existant ou renseigne un autre album.'));
@@ -209,7 +214,12 @@ class AdminExcerptController extends AbstractController
 
         if ($hasNewAlbum) {
             $hasExistingArtist = ($data['artist'] ?? null) instanceof Artist;
-            $hasNewArtist = trim((string) ($data['newArtistName'] ?? '')) !== '';
+            $newArtistName = $this->normalizeCatalogText($data['newArtistName'] ?? null);
+            $hasNewArtist = $newArtistName !== '';
+
+            if ($hasExistingArtist && $hasNewArtist) {
+                $form->get('newArtistName')->addError(new FormError('Choisis un artiste existant ou saisis un nouvel artiste, pas les deux.'));
+            }
 
             if (!$hasExistingArtist && !$hasNewArtist) {
                 $form->get('artist')->addError(new FormError('Choisis un artiste existant ou renseigne un autre artiste.'));
@@ -217,6 +227,35 @@ class AdminExcerptController extends AbstractController
 
             if ($data['releaseYear'] === null) {
                 $form->get('releaseYear')->addError(new FormError('Renseigne l’année du nouvel album.'));
+            }
+
+            if ($hasNewArtist && $this->findArtistByNormalizedName($entityManager, $newArtistName) instanceof Artist) {
+                $form->get('newArtistName')->addError(new FormError('Cet artiste existe déjà, choisis-le dans la liste.'));
+            }
+
+            $artist = $hasExistingArtist ? $data['artist'] : null;
+            if ($artist instanceof Artist && $data['releaseYear'] !== null) {
+                $existingAlbum = $this->findAlbumByNormalizedIdentity(
+                    $entityManager,
+                    $artist,
+                    $newAlbumTitle,
+                    (int) $data['releaseYear']
+                );
+            } elseif ($hasNewArtist && $data['releaseYear'] !== null) {
+                $existingArtist = $this->findArtistByNormalizedName($entityManager, $newArtistName);
+
+                if ($existingArtist instanceof Artist) {
+                    $existingAlbum = $this->findAlbumByNormalizedIdentity(
+                        $entityManager,
+                        $existingArtist,
+                        $newAlbumTitle,
+                        (int) $data['releaseYear']
+                    );
+                }
+            }
+
+            if ($existingAlbum instanceof Album) {
+                $form->get('newAlbumTitle')->addError(new FormError('Cet album existe déjà, choisis-le dans la liste.'));
             }
         }
 
@@ -258,7 +297,8 @@ class AdminExcerptController extends AbstractController
 
     private function findOrCreateArtist(EntityManagerInterface $entityManager, string $name): Artist
     {
-        $artist = $entityManager->getRepository(Artist::class)->findOneBy(['name' => $name]);
+        $name = $this->normalizeCatalogText($name);
+        $artist = $this->findArtistByNormalizedName($entityManager, $name);
 
         if ($artist instanceof Artist) {
             return $artist;
@@ -272,11 +312,8 @@ class AdminExcerptController extends AbstractController
 
     private function findOrCreateAlbum(EntityManagerInterface $entityManager, Artist $artist, string $title, int $releaseYear): Album
     {
-        $album = $entityManager->getRepository(Album::class)->findOneBy([
-            'artist' => $artist,
-            'title' => $title,
-            'releaseYear' => $releaseYear,
-        ]);
+        $title = $this->normalizeCatalogText($title);
+        $album = $this->findAlbumByNormalizedIdentity($entityManager, $artist, $title, $releaseYear);
 
         if ($album instanceof Album) {
             return $album;
@@ -294,10 +331,8 @@ class AdminExcerptController extends AbstractController
 
     private function findOrCreateSong(EntityManagerInterface $entityManager, Album $album, string $title): Song
     {
-        $song = $entityManager->getRepository(Song::class)->findOneBy([
-            'album' => $album,
-            'title' => $title,
-        ]);
+        $title = $this->normalizeCatalogText($title);
+        $song = $this->findSongByNormalizedIdentity($entityManager, $album, $title);
 
         if ($song instanceof Song) {
             return $song;
@@ -314,7 +349,8 @@ class AdminExcerptController extends AbstractController
 
     private function findOrCreateTag(EntityManagerInterface $entityManager, string $name): Tag
     {
-        $tag = $entityManager->getRepository(Tag::class)->findOneBy(['name' => $name]);
+        $name = $this->normalizeCatalogText($name);
+        $tag = $this->findTagByNormalizedName($entityManager, $name);
 
         if ($tag instanceof Tag) {
             return $tag;
@@ -403,8 +439,62 @@ class AdminExcerptController extends AbstractController
 
     private function normalizeOptionalText(mixed $value): ?string
     {
-        $text = trim((string) $value);
+        $text = $this->normalizeCatalogText($value);
 
         return $text !== '' ? $text : null;
+    }
+
+    private function normalizeCatalogText(mixed $value): string
+    {
+        $text = trim((string) $value);
+
+        return preg_replace('/\s+/u', ' ', $text) ?? $text;
+    }
+
+    private function findArtistByNormalizedName(EntityManagerInterface $entityManager, string $name): ?Artist
+    {
+        return $entityManager->getRepository(Artist::class)
+            ->createQueryBuilder('artist')
+            ->andWhere('LOWER(TRIM(artist.name)) = :name')
+            ->setParameter('name', mb_strtolower($name))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function findAlbumByNormalizedIdentity(EntityManagerInterface $entityManager, Artist $artist, string $title, int $releaseYear): ?Album
+    {
+        return $entityManager->getRepository(Album::class)
+            ->createQueryBuilder('album')
+            ->join('album.artist', 'artist')
+            ->andWhere('album.artist = :artist')
+            ->andWhere('LOWER(TRIM(album.title)) = :title')
+            ->andWhere('album.releaseYear = :releaseYear')
+            ->setParameter('artist', $artist)
+            ->setParameter('title', mb_strtolower($title))
+            ->setParameter('releaseYear', $releaseYear)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function findSongByNormalizedIdentity(EntityManagerInterface $entityManager, Album $album, string $title): ?Song
+    {
+        return $entityManager->getRepository(Song::class)
+            ->createQueryBuilder('song')
+            ->andWhere('song.album = :album')
+            ->andWhere('LOWER(TRIM(song.title)) = :title')
+            ->setParameter('album', $album)
+            ->setParameter('title', mb_strtolower($title))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function findTagByNormalizedName(EntityManagerInterface $entityManager, string $name): ?Tag
+    {
+        return $entityManager->getRepository(Tag::class)
+            ->createQueryBuilder('tag')
+            ->andWhere('LOWER(TRIM(tag.name)) = :name')
+            ->setParameter('name', mb_strtolower($name))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
