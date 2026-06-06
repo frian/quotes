@@ -12,6 +12,10 @@
             <a href="{{ path('artist_show', { id: song.album.artist.id }) }}">{{ song.album.artist.name }}</a>
             ·
             <a href="{{ path('year_show', { year: song.album.releaseYear }) }}">{{ song.album.releaseYear }}</a>
+            {% if song.sourceUrl %}
+                ·
+                <a href="{{ song.sourceUrl }}" rel="noopener noreferrer" target="_blank">Écouter</a>
+            {% endif %}
         </p>
     </section>
 

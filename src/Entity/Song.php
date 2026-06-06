@@ -19,6 +19,9 @@ class Song
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[ORM\Column(length: 2048, nullable: true)]
+    private ?string $sourceUrl = null;
+
     #[ORM\ManyToOne(inversedBy: 'songs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Album $album = null;
@@ -47,6 +50,18 @@ class Song
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getSourceUrl(): ?string
+    {
+        return $this->sourceUrl;
+    }
+
+    public function setSourceUrl(?string $sourceUrl): static
+    {
+        $this->sourceUrl = $sourceUrl;
 
         return $this;
     }

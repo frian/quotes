@@ -18,8 +18,10 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/excerpts')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminExcerptController extends AbstractController
 {
     #[Route('/new', name: 'admin_excerpt_new', methods: ['GET', 'POST'])]
@@ -123,8 +125,10 @@ class AdminExcerptController extends AbstractController
      */
     private function applyFormData(EntityManagerInterface $entityManager, SongExcerpt $excerpt, array $data): void
     {
+        $currentSong = $excerpt->getSong();
         $album = $this->resolveAlbum($entityManager, $data);
         $song = $this->findOrCreateSong($entityManager, $album, trim((string) $data['songTitle']));
+        $this->applySongSourceUrl($song, $this->normalizeOptionalText($data['songSourceUrl'] ?? null), $currentSong === $song);
 
         $excerpt
             ->setSong($song)
@@ -163,6 +167,7 @@ class AdminExcerptController extends AbstractController
             'newAlbumTitle' => null,
             'releaseYear' => $album?->getReleaseYear(),
             'songTitle' => $song?->getTitle(),
+            'songSourceUrl' => $song?->getSourceUrl(),
             'body' => $excerpt->getBody(),
             'position' => $excerpt->getPosition(),
             'tags' => $excerpt->getTags()->toArray(),
@@ -319,6 +324,13 @@ class AdminExcerptController extends AbstractController
         $entityManager->persist($tag);
 
         return $tag;
+    }
+
+    private function applySongSourceUrl(Song $song, ?string $sourceUrl, bool $isCurrentExcerptSong): void
+    {
+        if ($sourceUrl !== null || $isCurrentExcerptSong || $song->getId() === null) {
+            $song->setSourceUrl($sourceUrl);
+        }
     }
 
     private function cleanupUnusedCatalogEntities(EntityManagerInterface $entityManager): void

@@ -38,6 +38,26 @@ class SongExcerptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findRandom(): ?SongExcerpt
+    {
+        $rows = $this->createQueryBuilder('excerpt')
+            ->select('excerpt.id')
+            ->getQuery()
+            ->getScalarResult();
+
+        if ($rows === []) {
+            return null;
+        }
+
+        $row = $rows[random_int(0, count($rows) - 1)];
+
+        return $this->baseListQueryBuilder()
+            ->andWhere('excerpt.id = :id')
+            ->setParameter('id', (int) $row['id'])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * @return SongExcerpt[]
      */

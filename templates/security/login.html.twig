@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Accès privé</p>
+        <h1>Connexion au carnet</h1>
+    </section>
+
+    {% if error %}
+        <p class="flash flash--error">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+    {% endif %}
+
+    <form class="login-form" action="{{ path('app_login') }}" method="post">
+        <label for="username">Identifiant</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" autocomplete="username" required>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="_password" autocomplete="current-password" required>
+
+        <div class="form-actions">
+            <button type="submit">Entrer</button>
+        </div>
+    </form>
+{% endblock %}

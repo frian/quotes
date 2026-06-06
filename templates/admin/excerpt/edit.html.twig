@@ -11,9 +11,11 @@
     <section class="form-panel">
         {% include 'admin/excerpt/_form.html.twig' with { form: form } %}
 
-        <form class="delete-form" method="post" action="{{ path('admin_excerpt_delete', { id: excerpt.id }) }}" onsubmit="return confirm('Supprimer définitivement cet extrait ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete_excerpt_' ~ excerpt.id) }}">
-            <button type="submit">Supprimer l’extrait</button>
-        </form>
+        {% if is_granted('ROLE_ADMIN') %}
+            <form class="delete-form" method="post" action="{{ path('admin_excerpt_delete', { id: excerpt.id }) }}" onsubmit="return confirm('Supprimer définitivement cet extrait ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_excerpt_' ~ excerpt.id) }}">
+                <button type="submit">Supprimer l’extrait</button>
+            </form>
+        {% endif %}
     </section>
 {% endblock %}

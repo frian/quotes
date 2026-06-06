@@ -16,6 +16,9 @@
         <a href="{{ path('year_show', { year: excerpt.song.album.releaseYear }) }}">
             {{ excerpt.song.album.releaseYear }}
         </a>
+        {% if excerpt.song.sourceUrl %}
+            <a href="{{ excerpt.song.sourceUrl }}" rel="noopener noreferrer" target="_blank">Écouter</a>
+        {% endif %}
     </footer>
 
     {% if excerpt.tags is not empty %}
@@ -32,6 +35,8 @@
 
     <p class="admin-links">
         <a href="{{ path('excerpt_show', { id: excerpt.id }) }}">Permalien</a>
-        <a href="{{ path('admin_excerpt_edit', { id: excerpt.id }) }}">Modifier</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_excerpt_edit', { id: excerpt.id }) }}">Modifier</a>
+        {% endif %}
     </p>
 </article>
