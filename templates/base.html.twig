@@ -33,6 +33,7 @@
                 <a href="{{ path('excerpt_random') }}">Au hasard</a>
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
+                    <a href="{{ path('admin_excerpt_import') }}">Importer</a>
                     <a href="{{ path('app_logout') }}">Déconnexion</a>
                 {% else %}
                     <a href="{{ path('app_login') }}">Connexion</a>

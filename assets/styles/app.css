@@ -560,6 +560,8 @@ h1 {
 
 .flash--success {
     border-color: #47705a;
+    background: #eef7f1;
+    font-weight: 700;
 }
 
 .flash--error {
@@ -569,6 +571,81 @@ h1 {
 
 .form-panel {
     max-width: 38rem;
+}
+
+.import-sample {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(216, 208, 196, 0.7);
+}
+
+.import-status {
+    margin: 0 0 1rem;
+    padding: 0.9rem 1rem;
+    font-family: var(--font-ui);
+    border-left: 4px solid var(--color-link);
+    background: rgba(237, 242, 238, 0.7);
+}
+
+.import-status p {
+    margin: 0;
+}
+
+.import-status--success {
+    border-color: #47705a;
+    background: #eef7f1;
+    font-weight: 700;
+}
+
+.import-status--warning {
+    border-color: #9b6c1b;
+    background: #fbf5e7;
+}
+
+.import-status--error {
+    border-color: #8a3a2d;
+    background: #f6ece8;
+}
+
+.import-sample h2 {
+    margin: 0;
+    color: var(--color-accent);
+    font-family: var(--font-ui);
+    font-size: 0.86rem;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.import-sample pre {
+    margin: 0;
+    overflow: auto;
+    padding: 0.9rem 1rem;
+    color: var(--color-ink);
+    background: rgba(251, 250, 245, 0.95);
+    border: 1px solid rgba(216, 208, 196, 0.85);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.import-summary {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    background: rgba(237, 242, 238, 0.55);
+    border-left: 3px solid var(--color-link);
+    font-family: var(--font-ui);
+}
+
+.import-summary p {
+    margin: 0;
+}
+
+.import-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
 }
 
 .form-intro {

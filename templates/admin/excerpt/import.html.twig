@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer des extraits{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Import manuel</p>
+        <h1>Coller un CSV</h1>
+        <p class="page-subtitle">
+            Une ligne par extrait, avec les colonnes
+            <code>artist</code>, <code>album</code>, <code>year</code>, <code>song</code>, <code>body</code>,
+            puis <code>source_url</code>, <code>tags</code>, <code>note</code> et <code>position</code> si besoin.
+            Après validation réussie, tu reviens à la liste des extraits avec un message de confirmation.
+        </p>
+    </section>
+
+    <section class="form-panel">
+        {% if status is not null %}
+            <div class="import-status import-status--{{ status.type }}">
+                <p>{{ status.message }}</p>
+            </div>
+        {% endif %}
+
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.content) }}
+
+            <div class="import-sample">
+                <h2>Exemple</h2>
+                <pre>artist;album;year;song;body;source_url;tags;note;position
+Dire Straits;Brothers in Arms;1985;Money for Nothing;I want my MTV...;https://example.com;rock, live;Note personnelle;1</pre>
+            </div>
+
+            {% if summary is not null %}
+                <div class="import-summary">
+                    <p><strong>{{ summary.imported }}</strong> extrait{{ summary.imported > 1 ? 's' : '' }} importé{{ summary.imported > 1 ? 's' : '' }}.</p>
+
+                    {% if summary.imported == 0 and summary.errors is empty %}
+                        <p>Aucune ligne valide n’a pu être importée.</p>
+                    {% endif %}
+
+                    {% if summary.errors is not empty %}
+                        <ul>
+                            {% for error in summary.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                {{ form_row(form.save) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

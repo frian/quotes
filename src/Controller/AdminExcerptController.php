@@ -7,10 +7,12 @@ use App\Entity\Artist;
 use App\Entity\Song;
 use App\Entity\SongExcerpt;
 use App\Entity\Tag;
+use App\Form\ExcerptImportType;
 use App\Form\SongExcerptType;
 use App\Repository\AlbumRepository;
 use App\Repository\ArtistRepository;
 use App\Repository\TagRepository;
+use App\Service\ExcerptCsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -61,6 +63,87 @@ class AdminExcerptController extends AbstractController
         ]);
     }
 
+    #[Route('/import', name: 'admin_excerpt_import', methods: ['GET', 'POST'])]
+    public function import(
+        Request $request,
+        ExcerptCsvImporter $excerptCsvImporter,
+    ): Response
+    {
+        $form = $this->createForm(ExcerptImportType::class);
+        $form->handleRequest($request);
+
+        $summary = null;
+        $status = null;
+
+        if ($form->isSubmitted()) {
+            $status = [
+                'type' => 'warning',
+                'message' => 'Import reçu, traitement en cours…',
+            ];
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array<string, mixed> $data */
+            $data = $form->getData();
+
+            try {
+                $result = $excerptCsvImporter->import((string) ($data['content'] ?? ''));
+                $summary = $result;
+
+                if ($result['errors'] === [] && $result['imported'] > 0) {
+                    $this->addFlash(
+                        'success',
+                        sprintf(
+                            '%d extrait%s importé%s depuis le CSV.',
+                            $result['imported'],
+                            $result['imported'] > 1 ? 's' : '',
+                            $result['imported'] > 1 ? 's' : '',
+                        )
+                    );
+
+                    return $this->redirectToRoute('excerpt_index');
+                } elseif ($result['imported'] > 0) {
+                    $status = [
+                        'type' => 'warning',
+                        'message' => sprintf(
+                            '%d extrait%s importé%s. Certaines lignes demandent une correction.',
+                            $result['imported'],
+                            $result['imported'] > 1 ? 's' : '',
+                            $result['imported'] > 1 ? 's' : '',
+                        ),
+                    ];
+                } elseif ($result['errors'] === []) {
+                    $status = [
+                        'type' => 'error',
+                        'message' => 'Aucune ligne valide n’a pu être importée.',
+                    ];
+                } else {
+                    $status = [
+                        'type' => 'error',
+                        'message' => 'Certaines lignes n’ont pas pu être importées.',
+                    ];
+                }
+            } catch (\InvalidArgumentException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
+                $status = [
+                    'type' => 'error',
+                    'message' => $exception->getMessage(),
+                ];
+            } catch (\Throwable $exception) {
+                $form->addError(new FormError('Import impossible : '.$exception->getMessage()));
+                $status = [
+                    'type' => 'error',
+                    'message' => 'Import impossible : '.$exception->getMessage(),
+                ];
+            }
+        }
+
+        return $this->render('admin/excerpt/import.html.twig', [
+            'form' => $form,
+            'summary' => $summary,
+            'status' => $status,
+        ]);
+    }
     #[Route('/{id}/edit', name: 'admin_excerpt_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         SongExcerpt $excerpt,
@@ -306,6 +389,7 @@ class AdminExcerptController extends AbstractController
 
         $artist = (new Artist())->setName($name);
         $entityManager->persist($artist);
+        $entityManager->flush();
 
         return $artist;
     }
@@ -325,6 +409,7 @@ class AdminExcerptController extends AbstractController
             ->setReleaseYear($releaseYear);
 
         $entityManager->persist($album);
+        $entityManager->flush();
 
         return $album;
     }
@@ -343,6 +428,7 @@ class AdminExcerptController extends AbstractController
             ->setTitle($title);
 
         $entityManager->persist($song);
+        $entityManager->flush();
 
         return $song;
     }
@@ -358,6 +444,7 @@ class AdminExcerptController extends AbstractController
 
         $tag = (new Tag())->setName($name);
         $entityManager->persist($tag);
+        $entityManager->flush();
 
         return $tag;
     }
