@@ -460,6 +460,13 @@ h1 {
     font-family: var(--font-ui);
 }
 
+.index-list__item {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+}
+
 .index-list--years a {
     min-width: 4.5rem;
     justify-content: center;

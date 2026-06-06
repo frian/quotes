@@ -14,7 +14,12 @@
     {% else %}
         <nav class="index-list" aria-label="Liste des tags">
             {% for tag in tags %}
-                <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+                <span class="index-list__item">
+                    <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('admin_tag_edit', { id: tag.id }) }}">Modifier</a>
+                    {% endif %}
+                </span>
             {% endfor %}
         </nav>
     {% endif %}

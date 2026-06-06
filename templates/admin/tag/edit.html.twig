@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ tag.name }}{% endblock %}
+
+{% block body %}
+    <section class="page-intro">
+        <p class="eyebrow">Correction</p>
+        <h1>Modifier ce tag</h1>
+        <p class="page-subtitle">Ajuster un nom, corriger une typo, ou retirer un tag devenu inutile.</p>
+    </section>
+
+    <section class="form-panel">
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.name) }}
+
+            <div class="form-actions">
+                {{ form_row(form.save) }}
+            </div>
+        {{ form_end(form) }}
+
+        <form class="delete-form" method="post" action="{{ path('admin_tag_delete', { id: tag.id }) }}" onsubmit="return confirm('Supprimer définitivement ce tag ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
+            <button type="submit">Supprimer le tag</button>
+        </form>
+    </section>
+{% endblock %}
