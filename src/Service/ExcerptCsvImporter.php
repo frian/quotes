@@ -16,7 +16,35 @@ class ExcerptCsvImporter
     }
 
     /**
-     * @return array{imported: int, errors: string[]}
+     * @return array{mode: string, total: int, ready: int, errors: string[]}
+     */
+    public function preview(string $content): array
+    {
+        $rows = $this->parseRows($content);
+        $ready = 0;
+        $errors = [];
+
+        foreach ($rows as $index => $row) {
+            $lineNumber = $index + 2;
+
+            try {
+                $this->validateRow($row);
+                $ready++;
+            } catch (\InvalidArgumentException $exception) {
+                $errors[] = sprintf('Ligne %d : %s', $lineNumber, $exception->getMessage());
+            }
+        }
+
+        return [
+            'mode' => 'preview',
+            'total' => count($rows),
+            'ready' => $ready,
+            'errors' => $errors,
+        ];
+    }
+
+    /**
+     * @return array{mode: string, total: int, imported: int, errors: string[]}
      */
     public function import(string $content): array
     {
@@ -28,7 +56,8 @@ class ExcerptCsvImporter
             $lineNumber = $index + 2;
 
             try {
-                $excerpt = $this->createExcerptFromRow($row);
+                $validatedRow = $this->validateRow($row);
+                $excerpt = $this->createExcerptFromValidatedRow($validatedRow);
                 $this->entityManager->persist($excerpt);
                 $this->entityManager->flush();
                 $imported++;
@@ -38,6 +67,8 @@ class ExcerptCsvImporter
         }
 
         return [
+            'mode' => 'import',
+            'total' => count($rows),
             'imported' => $imported,
             'errors' => $errors,
         ];
@@ -143,8 +174,20 @@ class ExcerptCsvImporter
 
     /**
      * @param array<string, string> $row
+     *
+     * @return array{
+     *     artist: string,
+     *     album: string,
+     *     year: int,
+     *     song: string,
+     *     body: string,
+     *     source_url: ?string,
+     *     note: ?string,
+     *     position: ?int,
+     *     tag_names: string[]
+     * }
      */
-    private function createExcerptFromRow(array $row): SongExcerpt
+    private function validateRow(array $row): array
     {
         $artistName = $this->normalizeCatalogText($row['artist'] ?? '');
         $albumTitle = $this->normalizeCatalogText($row['album'] ?? '');
@@ -160,26 +203,56 @@ class ExcerptCsvImporter
             throw new \InvalidArgumentException('year doit contenir une année valide.');
         }
 
-        $artist = $this->findOrCreateArtist($artistName);
-        $album = $this->findOrCreateAlbum($artist, $albumTitle, (int) $yearValue);
-        $song = $this->findOrCreateSong($album, $songTitle);
-        $this->applySongSourceUrl($song, $this->normalizeOptionalText($row['source_url'] ?? null));
-
-        $excerpt = (new SongExcerpt())
-            ->setSong($song)
-            ->setBody($body)
-            ->setNote($this->normalizeOptionalText($row['note'] ?? null));
-
         $position = $this->normalizeCatalogText($row['position'] ?? '');
+        $resolvedPosition = null;
         if ($position !== '') {
             if (!ctype_digit($position)) {
                 throw new \InvalidArgumentException('position doit être numérique.');
             }
 
-            $excerpt->setPosition((int) $position);
+            $resolvedPosition = (int) $position;
         }
 
-        foreach ($this->parseTagNames($row['tags'] ?? '') as $tagName) {
+        return [
+            'artist' => $artistName,
+            'album' => $albumTitle,
+            'year' => (int) $yearValue,
+            'song' => $songTitle,
+            'body' => $body,
+            'source_url' => $this->normalizeOptionalText($row['source_url'] ?? null),
+            'note' => $this->normalizeOptionalText($row['note'] ?? null),
+            'position' => $resolvedPosition,
+            'tag_names' => $this->parseTagNames($row['tags'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param array{
+     *     artist: string,
+     *     album: string,
+     *     year: int,
+     *     song: string,
+     *     body: string,
+     *     source_url: ?string,
+     *     note: ?string,
+     *     position: ?int,
+     *     tag_names: string[]
+     * } $row
+     */
+    private function createExcerptFromValidatedRow(array $row): SongExcerpt
+    {
+        $artist = $this->findOrCreateArtist($row['artist']);
+        $album = $this->findOrCreateAlbum($artist, $row['album'], $row['year']);
+        $song = $this->findOrCreateSong($album, $row['song']);
+        $this->applySongSourceUrl($song, $row['source_url']);
+
+        $excerpt = (new SongExcerpt())
+            ->setSong($song)
+            ->setBody($row['body'])
+            ->setNote($row['note'])
+            ->setPosition($row['position']);
+
+        foreach ($row['tag_names'] as $tagName) {
             $excerpt->addTag($this->findOrCreateTag($tagName));
         }
 

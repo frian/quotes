@@ -74,54 +74,85 @@ class AdminExcerptController extends AbstractController
 
         $summary = null;
         $status = null;
-
-        if ($form->isSubmitted()) {
-            $status = [
-                'type' => 'warning',
-                'message' => 'Import reçu, traitement en cours…',
-            ];
-        }
+        $showConfirm = false;
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var array<string, mixed> $data */
             $data = $form->getData();
+            $content = (string) ($data['content'] ?? '');
 
             try {
-                $result = $excerptCsvImporter->import((string) ($data['content'] ?? ''));
-                $summary = $result;
+                if ($form->get('confirm')->isClicked()) {
+                    $summary = $excerptCsvImporter->import($content);
 
-                if ($result['errors'] === [] && $result['imported'] > 0) {
-                    $this->addFlash(
-                        'success',
-                        sprintf(
-                            '%d extrait%s importé%s depuis le CSV.',
-                            $result['imported'],
-                            $result['imported'] > 1 ? 's' : '',
-                            $result['imported'] > 1 ? 's' : '',
-                        )
-                    );
+                    if ($summary['errors'] === [] && $summary['imported'] > 0) {
+                        $this->addFlash(
+                            'success',
+                            sprintf(
+                                '%d extrait%s importé%s depuis le CSV.',
+                                $summary['imported'],
+                                $summary['imported'] > 1 ? 's' : '',
+                                $summary['imported'] > 1 ? 's' : '',
+                            )
+                        );
 
-                    return $this->redirectToRoute('excerpt_index');
-                } elseif ($result['imported'] > 0) {
-                    $status = [
-                        'type' => 'warning',
-                        'message' => sprintf(
-                            '%d extrait%s importé%s. Certaines lignes demandent une correction.',
-                            $result['imported'],
-                            $result['imported'] > 1 ? 's' : '',
-                            $result['imported'] > 1 ? 's' : '',
-                        ),
-                    ];
-                } elseif ($result['errors'] === []) {
-                    $status = [
-                        'type' => 'error',
-                        'message' => 'Aucune ligne valide n’a pu être importée.',
-                    ];
+                        return $this->redirectToRoute('excerpt_index');
+                    }
+
+                    if ($summary['imported'] > 0) {
+                        $showConfirm = true;
+                        $status = [
+                            'type' => 'warning',
+                            'message' => sprintf(
+                                '%d extrait%s importé%s. Certaines lignes demandent une correction.',
+                                $summary['imported'],
+                                $summary['imported'] > 1 ? 's' : '',
+                                $summary['imported'] > 1 ? 's' : '',
+                            ),
+                        ];
+                    } elseif ($summary['errors'] === []) {
+                        $status = [
+                            'type' => 'error',
+                            'message' => 'Aucune ligne valide n’a pu être importée.',
+                        ];
+                    } else {
+                        $showConfirm = true;
+                        $status = [
+                            'type' => 'error',
+                            'message' => 'Certaines lignes n’ont pas pu être importées.',
+                        ];
+                    }
                 } else {
-                    $status = [
-                        'type' => 'error',
-                        'message' => 'Certaines lignes n’ont pas pu être importées.',
-                    ];
+                    $summary = $excerptCsvImporter->preview($content);
+                    $showConfirm = $summary['ready'] > 0;
+
+                    if ($summary['errors'] === [] && $summary['ready'] > 0) {
+                        $status = [
+                            'type' => 'success',
+                            'message' => sprintf(
+                                '%d ligne%s prête%s à être importée%s.',
+                                $summary['ready'],
+                                $summary['ready'] > 1 ? 's' : '',
+                                $summary['ready'] > 1 ? 's' : '',
+                                $summary['ready'] > 1 ? 's' : '',
+                            ),
+                        ];
+                    } elseif ($summary['ready'] > 0) {
+                        $status = [
+                            'type' => 'warning',
+                            'message' => sprintf(
+                                '%d ligne%s prête%s. Certaines lignes demandent une correction avant import.',
+                                $summary['ready'],
+                                $summary['ready'] > 1 ? 's' : '',
+                                $summary['ready'] > 1 ? 's' : '',
+                            ),
+                        ];
+                    } else {
+                        $status = [
+                            'type' => 'error',
+                            'message' => 'Aucune ligne valide n’a été détectée dans la prévisualisation.',
+                        ];
+                    }
                 }
             } catch (\InvalidArgumentException $exception) {
                 $form->addError(new FormError($exception->getMessage()));
@@ -130,16 +161,18 @@ class AdminExcerptController extends AbstractController
                     'message' => $exception->getMessage(),
                 ];
             } catch (\Throwable $exception) {
-                $form->addError(new FormError('Import impossible : '.$exception->getMessage()));
+                $prefix = $form->get('confirm')->isClicked() ? 'Import impossible : ' : 'Prévisualisation impossible : ';
+                $form->addError(new FormError($prefix.$exception->getMessage()));
                 $status = [
                     'type' => 'error',
-                    'message' => 'Import impossible : '.$exception->getMessage(),
+                    'message' => $prefix.$exception->getMessage(),
                 ];
             }
         }
 
         return $this->render('admin/excerpt/import.html.twig', [
             'form' => $form,
+            'form_show_confirm' => $showConfirm,
             'summary' => $summary,
             'status' => $status,
         ]);

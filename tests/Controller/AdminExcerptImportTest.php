@@ -16,7 +16,7 @@ class AdminExcerptImportTest extends AbstractControllerWebTestCase
         return 'empty';
     }
 
-    public function testImportPostCreatesExcerptsAndRedirectsToCatalog(): void
+    public function testPreviewThenConfirmCreatesExcerptsAndRedirectsToCatalog(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -35,7 +35,7 @@ class AdminExcerptImportTest extends AbstractControllerWebTestCase
         $tagTwo = 'test-import-tag-two-'.uniqid();
 
         $crawler = $client->request('GET', '/admin/excerpts/import');
-        $form = $crawler->selectButton('Importer le CSV')->form([
+        $form = $crawler->selectButton('Prévisualiser')->form([
             'excerpt_import[content]' => implode("\n", [
                 'artist;album;year;song;body;source_url;tags;note;position',
                 sprintf(
@@ -54,12 +54,22 @@ class AdminExcerptImportTest extends AbstractControllerWebTestCase
 
         $client->submit($form);
 
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.import-summary', '1 ligne prête');
+        self::assertSelectorExists('button#excerpt_import_confirm');
+
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        self::assertNull($entityManager->getRepository(Artist::class)->findOneBy(['name' => $artistName]));
+
+        $confirmForm = $client->getCrawler()->selectButton('Confirmer l’import')->form();
+        $client->submit($confirmForm);
+
         self::assertResponseRedirects('/excerpts');
 
         $client->followRedirect();
         self::assertResponseIsSuccessful();
 
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->clear();
 
         $artist = $entityManager->getRepository(Artist::class)->findOneBy(['name' => $artistName]);
         self::assertInstanceOf(Artist::class, $artist);
@@ -90,5 +100,38 @@ class AdminExcerptImportTest extends AbstractControllerWebTestCase
         $tagRepository = $entityManager->getRepository(Tag::class);
         self::assertInstanceOf(Tag::class, $tagRepository->findOneBy(['name' => $tagOne]));
         self::assertInstanceOf(Tag::class, $tagRepository->findOneBy(['name' => $tagTwo]));
+    }
+
+    public function testPreviewWithInvalidRowsDoesNotWriteAnything(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+        $form = $crawler->selectButton('Entrer')->form([
+            '_username' => 'admin',
+            '_password' => 'change-me',
+        ]);
+        $client->submit($form);
+        self::assertResponseRedirects('/');
+        $client->followRedirect();
+
+        $artistName = 'Preview Only Artist '.uniqid('', true);
+
+        $crawler = $client->request('GET', '/admin/excerpts/import');
+        $form = $crawler->selectButton('Prévisualiser')->form([
+            'excerpt_import[content]' => implode("\n", [
+                'artist;album;year;song;body;source_url;tags;note;position',
+                sprintf('%s;Broken Album;bad-year;Broken Song;Body;;;;', $artistName),
+            ]),
+        ]);
+
+        $client->submit($form);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.import-summary', '0 ligne prête');
+        self::assertSelectorTextContains('.import-summary', 'year doit contenir une année valide');
+        self::assertSelectorNotExists('button#excerpt_import_confirm');
+
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        self::assertNull($entityManager->getRepository(Artist::class)->findOneBy(['name' => $artistName]));
     }
 }

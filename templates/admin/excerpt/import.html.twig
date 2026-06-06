@@ -10,7 +10,7 @@
             Une ligne par extrait, avec les colonnes
             <code>artist</code>, <code>album</code>, <code>year</code>, <code>song</code>, <code>body</code>,
             puis <code>source_url</code>, <code>tags</code>, <code>note</code> et <code>position</code> si besoin.
-            Après validation réussie, tu reviens à la liste des extraits avec un message de confirmation.
+            La prévisualisation compte les lignes prêtes avant l’import réel.
         </p>
     </section>
 
@@ -33,9 +33,17 @@ Dire Straits;Brothers in Arms;1985;Money for Nothing;I want my MTV...;https://ex
 
             {% if summary is not null %}
                 <div class="import-summary">
-                    <p><strong>{{ summary.imported }}</strong> extrait{{ summary.imported > 1 ? 's' : '' }} importé{{ summary.imported > 1 ? 's' : '' }}.</p>
+                    {% if summary.mode == 'preview' %}
+                        <p><strong>{{ summary.ready }}</strong> ligne{{ summary.ready > 1 ? 's' : '' }} prête{{ summary.ready > 1 ? 's' : '' }} sur {{ summary.total }}.</p>
+                    {% else %}
+                        <p><strong>{{ summary.imported }}</strong> extrait{{ summary.imported > 1 ? 's' : '' }} importé{{ summary.imported > 1 ? 's' : '' }} sur {{ summary.total }} ligne{{ summary.total > 1 ? 's' : '' }} analysée{{ summary.total > 1 ? 's' : '' }}.</p>
+                    {% endif %}
 
-                    {% if summary.imported == 0 and summary.errors is empty %}
+                    {% if summary.mode == 'preview' and summary.ready == 0 and summary.errors is empty %}
+                        <p>Aucune ligne valide n’a été détectée.</p>
+                    {% endif %}
+
+                    {% if summary.mode == 'import' and summary.imported == 0 and summary.errors is empty %}
                         <p>Aucune ligne valide n’a pu être importée.</p>
                     {% endif %}
 
@@ -50,8 +58,12 @@ Dire Straits;Brothers in Arms;1985;Money for Nothing;I want my MTV...;https://ex
             {% endif %}
 
             <div class="form-actions">
-                {{ form_row(form.save) }}
+                {{ form_row(form.preview) }}
+                {% if form_show_confirm %}
+                    {{ form_row(form.confirm) }}
+                {% endif %}
             </div>
-        {{ form_end(form) }}
+            {{ form_widget(form._token) }}
+        {{ form_end(form, { render_rest: false }) }}
     </section>
 {% endblock %}

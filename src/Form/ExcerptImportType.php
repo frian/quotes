@@ -25,8 +25,11 @@ class ExcerptImportType extends AbstractType
                     new NotBlank(),
                 ],
             ])
-            ->add('save', SubmitType::class, [
-                'label' => $options['submit_label'],
+            ->add('preview', SubmitType::class, [
+                'label' => 'Prévisualiser',
+            ])
+            ->add('confirm', SubmitType::class, [
+                'label' => 'Confirmer l’import',
             ]);
     }
 
@@ -34,9 +37,6 @@ class ExcerptImportType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
-            'submit_label' => 'Importer le CSV',
         ]);
-
-        $resolver->setAllowedTypes('submit_label', 'string');
     }
 }
