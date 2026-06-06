@@ -165,13 +165,17 @@ class SongExcerptRepository extends ServiceEntityRepository
             return [];
         }
 
-        return $this->baseListQueryBuilder()
-            ->andWhere('LOWER(excerpt.body) LIKE :query')
-            ->orWhere('LOWER(excerpt.note) LIKE :query')
-            ->orWhere('LOWER(song.title) LIKE :query')
-            ->orWhere('LOWER(album.title) LIKE :query')
-            ->orWhere('LOWER(artist.name) LIKE :query')
-            ->orWhere('LOWER(tag.name) LIKE :query')
+        $queryBuilder = $this->baseListQueryBuilder();
+
+        return $queryBuilder
+            ->andWhere($queryBuilder->expr()->orX(
+                'LOWER(excerpt.body) LIKE :query',
+                'LOWER(excerpt.note) LIKE :query',
+                'LOWER(song.title) LIKE :query',
+                'LOWER(album.title) LIKE :query',
+                'LOWER(artist.name) LIKE :query',
+                'LOWER(tag.name) LIKE :query',
+            ))
             ->setParameter('query', '%'.$query.'%')
             ->orderBy('artist.name', 'ASC')
             ->addOrderBy('album.releaseYear', 'ASC')

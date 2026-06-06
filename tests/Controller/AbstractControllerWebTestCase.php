@@ -8,36 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractControllerWebTestCase extends WebTestCase
 {
-    /**
-     * @var array<string, bool>
-     */
-    private static array $preparedModes = [];
-
-    /**
-     * @var array<string, string>
-     */
-    private static array $prepareErrors = [];
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $mode = static::seedMode();
-
-        if (!isset(self::$preparedModes[$mode]) && !isset(self::$prepareErrors[$mode])) {
-            try {
-                static::rebuildDatabase();
-                self::$preparedModes[$mode] = true;
-            } catch (\Throwable $exception) {
-                self::$prepareErrors[$mode] = $exception->getMessage();
-            }
-        }
-
-        if (isset(self::$prepareErrors[$mode])) {
+        try {
+            static::rebuildDatabase();
+        } catch (\Throwable $exception) {
             self::fail(sprintf(
                 'Unable to prepare test database for mode "%s": %s',
-                $mode,
-                self::$prepareErrors[$mode]
+                static::seedMode(),
+                $exception->getMessage()
             ));
         }
     }
