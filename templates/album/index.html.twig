@@ -6,7 +6,7 @@
     <section class="page-intro">
         <p class="eyebrow">Albums</p>
         <h1>Disques traversés par le carnet</h1>
-        <p class="page-subtitle">{{ albums|length }} album{{ albums|length > 1 ? 's' : '' }} à ouvrir.</p>
+        <p class="page-subtitle page-list">{{ albums|length }} album{{ albums|length > 1 ? 's' : '' }} à ouvrir.</p>
     </section>
 
     {% if albums is empty %}

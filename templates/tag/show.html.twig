@@ -12,6 +12,7 @@
             { label: 'Modifier', url: path('admin_tag_edit', { id: tag.id }) }
         ] : [],
     } %}
-
-    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à ce tag.' } %}
+    <div class="show-item">
+        {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à ce tag.' } %}
+    </div>
 {% endblock %}

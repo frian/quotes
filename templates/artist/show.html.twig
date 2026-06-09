@@ -13,6 +13,7 @@
             url: path('album_show', { id: album.id })
         })
     } %}
-
-    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet artiste.' } %}
+    <div class="show-item">
+        {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet artiste.' } %}
+    </div>
 {% endblock %}

@@ -21,7 +21,7 @@
             </div>
         {% endif %}
 
-        {{ form_start(form) }}
+        {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
             {{ form_errors(form) }}
             {{ form_row(form.content) }}
 

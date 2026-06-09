@@ -11,10 +11,10 @@
                 Quelques fragments choisis au fil des années, comme des annotations laissées dans un carnet qu’on rouvre souvent.
             </p>
 
-            <div class="home-hero__actions">
+            {# <div class="home-hero__actions">
                 <a class="button-link" href="{{ path('excerpt_random') }}">Ouvrir au hasard</a>
                 <a class="button-link button-link--secondary" href="{{ path('excerpt_index') }}">Voir tous les extraits</a>
-            </div>
+            </div> #}
         </div>
 
         <aside class="home-hero__notes">
@@ -26,7 +26,7 @@
     <section class="home-grid">
         <article class="home-panel home-panel--featured">
             <div class="section-head">
-                <p class="eyebrow">Dernier extrait</p>
+                {# <p class="eyebrow">Dernier extrait</p> #}
                 <h2>La note la plus récente</h2>
             </div>
 
@@ -37,9 +37,9 @@
             {% endif %}
         </article>
 
-        <article class="home-panel">
+        <article class="home-panel home-panel--first">
             <div class="section-head">
-                <p class="eyebrow">Quelques repères</p>
+                {# <p class="eyebrow">Quelques repères</p> #}
                 <h2>Tags les plus utilisés</h2>
             </div>
 
@@ -56,7 +56,7 @@
 
         <article class="home-panel">
             <div class="section-head">
-                <p class="eyebrow">Années récentes</p>
+                {# <p class="eyebrow">Années récentes</p> #}
                 <h2>Derniers repères chronologiques</h2>
             </div>
 
@@ -72,8 +72,8 @@
         </article>
 
         <article class="home-panel">
-            <div class="section-head">
-                <p class="eyebrow">Dernières notes</p>
+            <div class="section-head home-excerp">
+                {# <p class="eyebrow">Dernières notes</p> #}
                 <h2>Quelques extraits à relire</h2>
             </div>
 
