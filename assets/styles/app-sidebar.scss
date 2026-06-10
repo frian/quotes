@@ -1,4 +1,6 @@
-@use './app';
+@use './layout';
+@use './app-sidebar-layout-alignement-fixes';
+@use './style';
 
 body {
     display: grid;

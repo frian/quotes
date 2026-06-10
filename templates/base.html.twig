@@ -4,57 +4,61 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Carnet musical{% endblock %}</title>
+        {% set appStylesheet = 'styles/app.scss' %}
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset(appStylesheet) }}">
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
 
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+        {# {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
         {% if frankenphpHotReload %}
         <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
         <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
+        {% endif %} #}
     </head>
     <body>
-        <header class="site-header">
-            <a class="site-title" href="{{ path('home') }}">Carnet musical</a>
+        <section class="layout">
+            <header class="site-header">
 
-            <div class="site-tools">
-            <nav class="site-nav" aria-label="Navigation principale">
-                <a href="{{ path('excerpt_index') }}">Extraits</a>
-                <a href="{{ path('tag_index') }}">Tags</a>
-                <a href="{{ path('artist_index') }}">Artistes</a>
-                <a href="{{ path('album_index') }}">Albums</a>
-                <a href="{{ path('song_index') }}">Chansons</a>
-                <a href="{{ path('year_index') }}">Années</a>
-                <a href="{{ path('excerpt_random') }}">Au hasard</a>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
-                    <a href="{{ path('admin_excerpt_import') }}">Importer</a>
-                    <a href="{{ path('app_logout') }}">Déconnexion</a>
-                {% else %}
-                    <a href="{{ path('app_login') }}">Connexion</a>
-                {% endif %}
-            </nav>
+                <a class="site-title" href="{{ path('home') }}">Carnet musical</a>
 
-                <form class="site-search" action="{{ path('search') }}" method="get">
-                    <label for="site_search_query">Recherche</label>
-                    <input id="site_search_query" name="q" type="search" value="{{ app.request.query.get('q') }}" autocomplete="off">
-                </form>
-            </div>
-        </header>
+                <div class="site-tools">
+                    <nav class="site-nav" aria-label="Navigation principale">
+                        <a href="{{ path('excerpt_index') }}">Extraits</a>
+                        <a href="{{ path('tag_index') }}">Tags</a>
+                        <a href="{{ path('artist_index') }}">Artistes</a>
+                        <a href="{{ path('album_index') }}">Albums</a>
+                        <a href="{{ path('song_index') }}">Chansons</a>
+                        <a href="{{ path('year_index') }}">Années</a>
+                        <a href="{{ path('excerpt_random') }}">Au hasard</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin_excerpt_new') }}">Ajouter</a>
+                            <a href="{{ path('admin_excerpt_import') }}">Importer</a>
+                            <a href="{{ path('app_logout') }}">Déconnexion</a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}">Connexion</a>
+                        {% endif %}
+                    </nav>
 
-        <main class="notebook-page">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <p class="flash flash--{{ label }}">{{ message }}</p>
+                    <form class="site-search" action="{{ path('search') }}" method="get">
+                        <label for="site_search_query">Recherche</label>
+                        <input id="site_search_query" name="q" type="search" value="{{ app.request.query.get('q') }}" autocomplete="off">
+                    </form>
+                </div>
+            </header>
+
+            <main class="notebook-page">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <p class="flash flash--{{ label }}">{{ message }}</p>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
 
-            {% block body %}{% endblock %}
-        </main>
+                {% block body %}{% endblock %}
+            </main>
     </body>
 </html>

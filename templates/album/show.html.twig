@@ -13,7 +13,6 @@
             { label: album.releaseYear, url: path('year_show', { year: album.releaseYear }) }
         ]
     } %}
-    <div class="show-item">
-        {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet album.' } %}
-    </div>
+
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cet album.' } %}
 {% endblock %}

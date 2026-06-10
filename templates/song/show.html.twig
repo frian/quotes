@@ -15,7 +15,5 @@
             { label: 'Écouter', url: song.sourceUrl, external: true, hidden: song.sourceUrl is empty }
         ]|filter(link => link.hidden is not defined or not link.hidden)
     } %}
-    <div class="show-item">
-        {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette chanson.' } %}
-    </div>
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette chanson.' } %}
 {% endblock %}

@@ -1,0 +1,37 @@
+:root {
+    --color-paper: #dde2e8;
+    --color-page: #fbfbfb;
+    --color-ink: #111111;
+    --color-muted: #5a6470;
+    --color-rule: #c6d3e0;
+    --color-accent: #111111;
+    --color-link: #333;
+    --color-soft: #eef2f6;
+    --font-body: "Caveat", cursive;
+    --font-ui: "Caveat", cursive;
+    --font-text: "Caveat", cursive;
+    --font-excerpt: "Permanent Marker", cursive;
+}
+
+html, body {
+    background-color: #cccc99;
+    font-family: var(--font-ui);
+    font-size: 20px;
+}
+
+h1 {
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+a {
+    color: var(--color-link);
+    font-weight: 700;
+}
+
+a:hover {
+    color: var(--color-accent);
+}

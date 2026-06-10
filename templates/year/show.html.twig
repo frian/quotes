@@ -9,7 +9,5 @@
         count: excerpts|length,
         summary: 'Les extraits liés aux albums sortis cette année-là.',
     } %}
-    <div class="show-item">
-        {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette année.' } %}
-    </div>
+    {% include 'excerpt/_list.html.twig' with { excerpts: excerpts, empty_message: 'Aucun extrait associé à cette année.' } %}
 {% endblock %}

@@ -32,6 +32,7 @@
 
     {% if excerpt.tags is not empty %}
         <nav class="tag-list" aria-label="Tags de l’extrait">
+            Tags : 
             {% for tag in excerpt.tags %}
                 <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
             {% endfor %}
