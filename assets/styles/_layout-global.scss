@@ -39,14 +39,13 @@ h1 {
 .site-header {
     display: flex;
     flex-direction: column;
-    // gap: var(--page-rhythm);
     width: 100%;
     margin: 0 auto;
     padding: var(--page-rhythm) 1.25rem 0;
 }
 
 .notebook-page {
-
+    position: relative;
     overflow-x: hidden;
     overflow-wrap: break-word;
     min-width: 0;
@@ -58,6 +57,7 @@ h1 {
 
 
 @media (min-width: 1024px) {
+
     .layout {
         margin: auto;
         width: max(80%, 1024px) ;
@@ -66,10 +66,10 @@ h1 {
     }
 
     .site-header {
-        grid-column: 1;
-        grid-row: 1;
-        max-width: none;
-        margin: 0;
+        position: sticky;
+        top: 5vh;
+        align-self: start;
+        height: 90vh;
     }
 
     .notebook-page {

@@ -4,15 +4,15 @@
 
 {% block body %}
     <section class="page-intro">
-        <p class="eyebrow">Albums</p>
+        <p>Albums</p>
         <h1>Disques traversés par le carnet</h1>
-        <p class="page-subtitle page-list">{{ albums|length }} album{{ albums|length > 1 ? 's' : '' }} à ouvrir.</p>
+        <p>{{ albums|length }} album{{ albums|length > 1 ? 's' : '' }} à ouvrir.</p>
     </section>
 
     {% if albums is empty %}
         <p class="empty-state">Aucun album pour le moment.</p>
     {% else %}
-        <div class="catalog-list catalog-list--cards">
+        <div class="catalog-list">
             {% for album in albums %}
                 <article class="catalog-card">
                     <h2><a href="{{ path('album_show', { id: album.id }) }}">{{ album.title }}</a></h2>

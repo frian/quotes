@@ -1,5 +1,5 @@
 .notebook-page {
-    background-color: #fcf9f0;
+    background-color: var(--color-paper);
     background-repeat: repeat;
     background-size: 400px 40px;
     background-position: 0 6px;
@@ -7,7 +7,6 @@
     border: 0;
     border-radius: 4px;
     box-shadow: 0 1.2rem 3rem rgba(38, 35, 31, 0.14);
-    padding-top: 12px;
 }
 
 .excerpt-body {
@@ -16,7 +15,7 @@
 }
 
 .excerpt-meta {
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .index-list {

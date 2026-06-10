@@ -4,9 +4,9 @@
 
 {% block body %}
     <section class="page-intro">
-        <p class="eyebrow">Tags</p>
+        <p>Tags</p>
         <h1>Entrées par sensation, thème ou souvenir</h1>
-        <p class="page-subtitle page-list">{{ tags|length }} tag{{ tags|length > 1 ? 's' : '' }} dans le carnet.</p>
+        <p>{{ tags|length }} tag{{ tags|length > 1 ? 's' : '' }} dans le carnet.</p>
     </section>
 
     {% if tags is empty %}
@@ -14,7 +14,7 @@
     {% else %}
         <nav class="index-list" aria-label="Liste des tags">
             {% for tag in tags %}
-                <span class="index-list__item">
+                <span>
                     <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('admin_tag_edit', { id: tag.id }) }}">Modifier</a>

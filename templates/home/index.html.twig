@@ -5,28 +5,23 @@
 {% block body %}
     <section class="home-hero">
         <div class="home-hero__intro">
-            <p class="eyebrow">Carnet personnel</p>
+            <p>Carnet personnel</p>
             <h1>Ouvre une page, reprends une écoute, retrouve une ligne.</h1>
-            <p class="home-hero__text">
+            <p>
                 Quelques fragments choisis au fil des années, comme des annotations laissées dans un carnet qu’on rouvre souvent.
             </p>
 
-            {# <div class="home-hero__actions">
-                <a class="button-link" href="{{ path('excerpt_random') }}">Ouvrir au hasard</a>
-                <a class="button-link button-link--secondary" href="{{ path('excerpt_index') }}">Voir tous les extraits</a>
-            </div> #}
         </div>
 
-        <aside class="home-hero__notes">
+        <aside>
             <p>Le carnet s’organise autour de trois repères simples : les extraits, les artistes et les années.</p>
             <p>La navigation reste légère pour laisser le texte respirer.</p>
         </aside>
     </section>
 
     <section class="home-grid">
-        <article class="home-panel home-panel--featured">
+        <article class="home-panel">
             <div class="section-head">
-                {# <p class="eyebrow">Dernier extrait</p> #}
                 <h2>La note la plus récente</h2>
             </div>
 
@@ -37,9 +32,8 @@
             {% endif %}
         </article>
 
-        <article class="home-panel home-panel--first">
+        <article class="home-panel">
             <div class="section-head">
-                {# <p class="eyebrow">Quelques repères</p> #}
                 <h2>Tags les plus utilisés</h2>
             </div>
 
@@ -56,14 +50,13 @@
 
         <article class="home-panel">
             <div class="section-head">
-                {# <p class="eyebrow">Années récentes</p> #}
                 <h2>Derniers repères chronologiques</h2>
             </div>
 
             {% if recentYears is empty %}
                 <p class="empty-state">Aucune année pour le moment.</p>
             {% else %}
-                <nav class="chip-list chip-list--years" aria-label="Années récentes">
+                <nav class="chip-list" aria-label="Années récentes">
                     {% for year in recentYears %}
                         <a href="{{ path('year_show', { year: year }) }}">{{ year }}</a>
                     {% endfor %}
@@ -72,15 +65,14 @@
         </article>
 
         <article class="home-panel">
-            <div class="section-head home-excerp">
-                {# <p class="eyebrow">Dernières notes</p> #}
+            <div class="section-head">
                 <h2>Quelques extraits à relire</h2>
             </div>
 
             {% if recentExcerpts is empty %}
                 <p class="empty-state">Aucun autre extrait à afficher.</p>
             {% else %}
-                <div class="home-excerpt-list">
+                <div>
                     {% for excerpt in recentExcerpts %}
                         {% include 'excerpt/_card.html.twig' with { excerpt: excerpt } %}
                     {% endfor %}

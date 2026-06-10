@@ -1,3 +1,7 @@
+.notebook-page {
+    padding-top: 12px;
+}
+
 .excerpt-card {
     margin-bottom: calc(2 * var(--page-rhythm));
 }
@@ -10,7 +14,7 @@
 
 .excerpt-meta {
     position: relative;
-    top: -4px;
+    top: -6px;
 }
 
 .home-hero {
@@ -45,7 +49,7 @@
 
 .tag-list {
     position: relative;
-    top: -6px;
+    top: -8px;
 }
 
 .chip-list {

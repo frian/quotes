@@ -4,13 +4,12 @@
 
 {% block body %}
     {% include '_detail_intro.html.twig' with {
-        intro_class: 'detail-intro--excerpt',
         eyebrow: 'Extrait',
         title: 'Une ligne retenue',
         summary: 'Un passage noté dans le carnet, avec son contexte musical.',
     } %}
 
-    <section class="detail-reading detail-reading--excerpt">
+    <section>
         {% include 'excerpt/_card.html.twig' with { excerpt: excerpt, variant: 'feature' } %}
     </section>
 {% endblock %}

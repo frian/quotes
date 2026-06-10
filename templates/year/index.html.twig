@@ -4,15 +4,15 @@
 
 {% block body %}
     <section class="page-intro">
-        <p class="eyebrow">Années</p>
+        <p>Années</p>
         <h1>Le carnet par millésimes</h1>
-        <p class="page-subtitle page-list">{{ years|length }} année{{ years|length > 1 ? 's' : '' }} repérée{{ years|length > 1 ? 's' : '' }}.</p>
+        <p>{{ years|length }} année{{ years|length > 1 ? 's' : '' }} repérée{{ years|length > 1 ? 's' : '' }}.</p>
     </section>
 
     {% if years is empty %}
         <p class="empty-state">Aucune année pour le moment.</p>
     {% else %}
-        <nav class="index-list index-list--years" aria-label="Liste des années">
+        <nav class="index-list" aria-label="Liste des années">
             {% for year in years %}
                 <a href="{{ path('year_show', { year: year }) }}">{{ year }}</a>
             {% endfor %}

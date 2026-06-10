@@ -1,6 +1,7 @@
 :root {
-    --color-paper: #dde2e8;
-    --color-page: #fbfbfb;
+    --color-background: #FDFDFD;
+    --color-paper: #fcf9f0;
+    --color-header: #fcf9f0;
     --color-ink: #111111;
     --color-muted: #5a6470;
     --color-rule: #c6d3e0;
@@ -9,14 +10,14 @@
     --color-soft: #eef2f6;
     --font-body: "Caveat", cursive;
     --font-ui: "Caveat", cursive;
-    --font-text: "Caveat", cursive;
     --font-excerpt: "Permanent Marker", cursive;
 }
 
 html, body {
-    background-color: #cccc99;
+    background-color: var(--color-background);
     font-family: var(--font-ui);
     font-size: 20px;
+    color: var(--color-ink);
 }
 
 h1 {

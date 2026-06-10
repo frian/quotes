@@ -4,15 +4,15 @@
 
 {% block body %}
     <section class="page-intro">
-        <p class="eyebrow">Chansons</p>
+        <p>Chansons</p>
         <h1>Chansons dont une phrase est restée</h1>
-        <p class="page-subtitle page-list">{{ songs|length }} chanson{{ songs|length > 1 ? 's' : '' }} avec extrait.</p>
+        <p>{{ songs|length }} chanson{{ songs|length > 1 ? 's' : '' }} avec extrait.</p>
     </section>
 
     {% if songs is empty %}
         <p class="empty-state">Aucune chanson pour le moment.</p>
     {% else %}
-        <div class="catalog-list catalog-list--cards">
+        <div class="catalog-list">
             {% for song in songs %}
                 <article class="catalog-card">
                     <h2><a href="{{ path('song_show', { id: song.id }) }}">{{ song.title }}</a></h2>

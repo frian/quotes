@@ -4,30 +4,25 @@
     </blockquote>
 
     <footer class="excerpt-meta">
-        <span class="excerpt-meta__item">
+        <span>
             extrait de
             <a href="{{ path('song_show', { id: excerpt.song.id }) }}">
                 {{ excerpt.song.title }}</a>
-        </span><span class="excerpt-meta__item">
+        </span><span>
             de l'album
             <a href="{{ path('album_show', { id: excerpt.song.album.id }) }}">
                 {{ excerpt.song.album.title }}</a>
         </span>
-        <span class="excerpt-meta__item">
+        <span>
             de
             <a href="{{ path('artist_show', { id: excerpt.song.album.artist.id }) }}">
                 {{ excerpt.song.album.artist.name }}</a>
         </span>
-        <span class="excerpt-meta__item">
+        <span>
             publié en
             <a href="{{ path('year_show', { year: excerpt.song.album.releaseYear }) }}">
                 {{ excerpt.song.album.releaseYear }}</a>
         </span>
-        {# {% if excerpt.song.sourceUrl %}
-            <span class="excerpt-meta__item">
-                <a href="{{ excerpt.song.sourceUrl }}" rel="noopener noreferrer" target="_blank">Écouter</a>
-            </span>
-        {% endif %} #}
     </footer>
 
     {% if excerpt.tags is not empty %}
@@ -39,15 +34,7 @@
         </nav>
     {% endif %}
 
-    {# {% if excerpt.note %}
-        <p class="personal-note">
-            <span class="personal-note__label">Note personnelle</span>
-            <span class="personal-note__body">{{ excerpt.note|nl2br }}</span>
-        </p>
-    {% endif %} #}
-
     <p class="admin-links">
-        {# <a href="{{ path('excerpt_show', { id: excerpt.id }) }}">Permalien</a> #}
         {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('admin_excerpt_edit', { id: excerpt.id }) }}">Modifier</a>
         {% endif %}
