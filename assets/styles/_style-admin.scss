@@ -1,0 +1,76 @@
+.form-panel select,
+.color-select__button,
+.form-actions button,
+.delete-form button {
+    font-family: var(--font-ui);
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    background-color: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(17, 17, 17, 0.42);
+    border-radius: 4px;
+    box-shadow: 0 2px 0 rgba(17, 17, 17, 0.14);
+}
+
+.form-panel select,
+.color-select__button {
+    min-height: var(--page-line-height);
+    padding: 0 0.7rem;
+}
+
+.form-panel select {
+    cursor: pointer;
+}
+
+.color-select__button {
+    cursor: pointer;
+}
+
+.color-select__button:hover,
+.color-select__button:focus,
+.form-panel select:hover,
+.form-panel select:focus {
+    background-color: #ffffff;
+    border-color: var(--color-ink);
+}
+
+.color-select__menu {
+    background-color: var(--color-paper);
+    border-color: rgba(17, 17, 17, 0.42);
+    border-radius: 4px;
+    box-shadow: 0 0.4rem 1rem rgba(17, 17, 17, 0.16);
+}
+
+.color-select__option {
+    font-family: var(--font-ui);
+    font-size: 1.2rem;
+    color: var(--color-ink);
+    cursor: pointer;
+    padding: 0.2rem 0.7rem;
+}
+
+.color-select__option:hover,
+.color-select__option:focus {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.form-actions button,
+.delete-form button {
+    cursor: pointer;
+    padding: 0.15rem 0.75rem;
+}
+
+.form-actions button:hover,
+.form-actions button:focus {
+    background-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.delete-form button {
+    color: #8f1d1d;
+    border-color: rgba(143, 29, 29, 0.55);
+}
+
+.delete-form button:hover,
+.delete-form button:focus {
+    background-color: #fff6f6;
+}

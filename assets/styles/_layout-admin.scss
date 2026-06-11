@@ -1,3 +1,52 @@
+.form-panel form {
+    display: grid;
+    gap: var(--page-rhythm);
+}
+
+.form-panel form > div:not(.form-fieldset):not(.form-actions),
+.form-fieldset > div,
+.color-select {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.form-fieldset {
+    display: grid;
+    gap: var(--page-rhythm);
+}
+
+.form-fieldset h2,
+.form-intro,
+.form-hint {
+    margin-bottom: 0;
+}
+
+.form-panel form > div > label,
+.form-fieldset > div > label,
+.color-select > label {
+    align-self: start;
+}
+
+.form-panel input:not([type="checkbox"]):not([type="radio"]),
+.form-panel select,
+.form-panel textarea,
+.color-select__button {
+    width: 100%;
+    max-width: 100%;
+}
+
+.form-panel textarea {
+    min-height: calc(2.5 * var(--page-rhythm));
+}
+
+.form-actions {
+    justify-items: start;
+}
+
+.delete-form {
+    margin-top: var(--page-rhythm);
+}
+
 .color-select {
     position: relative;
 }
@@ -19,10 +68,11 @@
 }
 
 .color-select__menu {
-    position: absolute;
+    position: static;
     z-index: 10;
     display: grid;
     min-width: 12rem;
+    width: 100%;
     background-color: var(--color-paper);
     border: 1px solid var(--color-rule);
 }
@@ -43,4 +93,59 @@
     width: 0.8rem;
     height: 0.8rem;
     border: 1px solid var(--color-ink);
+}
+
+@media (min-width: 1024px) {
+    .form-panel form > div:not(.form-fieldset):not(.form-actions),
+    .form-fieldset > div,
+    .color-select {
+        grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr);
+        align-items: start;
+        column-gap: var(--page-rhythm);
+    }
+
+    .form-fieldset,
+    .form-actions {
+        grid-column: 1 / -1;
+    }
+
+    .form-fieldset h2,
+    .form-intro,
+    .form-hint,
+    .form-panel form > div > .form-error-message,
+    .form-fieldset > div > .form-error-message,
+    .color-select > ul {
+        grid-column: 1 / -1;
+    }
+
+    .form-panel form > div > .form-text,
+    .form-fieldset > div > .form-text {
+        grid-column: 2;
+    }
+
+    .form-panel form > div > label,
+    .form-fieldset > div > label,
+    .color-select > label {
+        text-align: right;
+    }
+
+    .form-panel input:not([type="checkbox"]):not([type="radio"]),
+    .form-panel select,
+    .form-panel textarea,
+    .color-select__button {
+        grid-column: 2;
+    }
+
+    .color-select__menu {
+        grid-column: 2;
+    }
+
+    .form-actions {
+        grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr);
+        column-gap: var(--page-rhythm);
+    }
+
+    .form-actions > div {
+        grid-column: 2;
+    }
 }
