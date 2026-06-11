@@ -13,7 +13,32 @@
         {{ form_start(form) }}
             {{ form_errors(form) }}
             {{ form_row(form.name) }}
-            {{ form_row(form.color) }}
+            <div class="color-select" data-controller="color-select">
+                {{ form_label(form.color) }}
+                {{ form_errors(form.color) }}
+                {{ form_widget(form.color, { attr: { class: 'color-select__native', 'data-color-select-target': 'select', 'data-action': 'change->color-select#sync' } }) }}
+
+                <button class="color-select__button" type="button" data-color-select-target="button" data-action="color-select#toggle">
+                    <span class="color-select__swatch" data-color-select-target="swatch" aria-hidden="true"></span>
+                    <span data-color-select-target="label">{{ form.color.vars.placeholder }}</span>
+                </button>
+
+                <div class="color-select__menu" data-color-select-target="menu" hidden>
+                    {% for choice in form.color.vars.choices %}
+                        <button
+                            class="color-select__option"
+                            type="button"
+                            data-action="color-select#choose"
+                            data-color-label="{{ choice.label }}"
+                            data-color-value="{{ choice.value }}"
+                            data-color-class="{{ choice.data.class }}"
+                        >
+                            <span class="color-select__swatch {{ choice.data.class }}" aria-hidden="true"></span>
+                            <span>{{ choice.label }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
 
             <div class="form-actions">
                 {{ form_row(form.save) }}

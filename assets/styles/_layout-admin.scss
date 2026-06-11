@@ -1,0 +1,46 @@
+.color-select {
+    position: relative;
+}
+
+.color-select__native {
+    display: none;
+}
+
+.color-select__button,
+.color-select__option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.color-select__button {
+    min-width: 12rem;
+    justify-content: flex-start;
+}
+
+.color-select__menu {
+    position: absolute;
+    z-index: 10;
+    display: grid;
+    min-width: 12rem;
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-rule);
+}
+
+.color-select__menu[hidden] {
+    display: none;
+}
+
+.color-select__option {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
+.color-select__swatch {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1px solid var(--color-ink);
+}

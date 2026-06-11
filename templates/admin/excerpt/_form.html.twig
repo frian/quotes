@@ -33,7 +33,32 @@
         <h2>Tags</h2>
         {{ form_row(form.tags) }}
         {{ form_row(form.newTagNames) }}
-        {{ form_row(form.newTagColor) }}
+        <div class="color-select" data-controller="color-select">
+            {{ form_label(form.newTagColor) }}
+            {{ form_errors(form.newTagColor) }}
+            {{ form_widget(form.newTagColor, { attr: { class: 'color-select__native', 'data-color-select-target': 'select', 'data-action': 'change->color-select#sync' } }) }}
+
+            <button class="color-select__button" type="button" data-color-select-target="button" data-action="color-select#toggle">
+                <span class="color-select__swatch" data-color-select-target="swatch" aria-hidden="true"></span>
+                <span data-color-select-target="label">{{ form.newTagColor.vars.placeholder }}</span>
+            </button>
+
+            <div class="color-select__menu" data-color-select-target="menu" hidden>
+                {% for choice in form.newTagColor.vars.choices %}
+                    <button
+                        class="color-select__option"
+                        type="button"
+                        data-action="color-select#choose"
+                        data-color-label="{{ choice.label }}"
+                        data-color-value="{{ choice.value }}"
+                        data-color-class="{{ choice.data.class }}"
+                    >
+                        <span class="color-select__swatch {{ choice.data.class }}" aria-hidden="true"></span>
+                        <span>{{ choice.label }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
     {{ form_row(form.note) }}

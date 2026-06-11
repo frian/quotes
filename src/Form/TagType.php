@@ -25,7 +25,7 @@ class TagType extends AbstractType
             ->add('color', EntityType::class, [
                 'label' => 'Couleur',
                 'class' => Color::class,
-                'choice_label' => static fn (Color $color): string => sprintf('%s (%s)', $color->getName(), $color->getHexCode()),
+                'choice_label' => 'name',
                 'placeholder' => 'Choisir une couleur',
                 'required' => false,
             ])

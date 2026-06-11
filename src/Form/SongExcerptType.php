@@ -125,7 +125,7 @@ class SongExcerptType extends AbstractType
                 'label' => 'Couleur des nouveaux tags',
                 'class' => Color::class,
                 'choices' => $options['colors'],
-                'choice_label' => static fn (Color $color): string => sprintf('%s (%s)', $color->getName(), $color->getHexCode()),
+                'choice_label' => 'name',
                 'placeholder' => 'Choisir une couleur',
                 'required' => false,
             ])
