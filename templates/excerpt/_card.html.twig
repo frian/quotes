@@ -29,7 +29,9 @@
         <nav class="tag-list" aria-label="Tags de l’extrait">
             Tags : 
             {% for tag in excerpt.tags %}
-                <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+                <div class="tag-wrapper">
+                    <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+                </div>
             {% endfor %}
         </nav>
     {% endif %}

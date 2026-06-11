@@ -1,3 +1,7 @@
+.notebook-page-wrapper {
+    filter: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.16)) drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.23));
+}
+
 .notebook-page {
     background-color: var(--color-paper);
     background-repeat: repeat;
@@ -6,7 +10,59 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' viewBox='0 0 400 40'%3E%3Cpath d='M0 32 C80 31,120 34,200 32 S320 30,400 32' fill='none' stroke='%23666666' stroke-width='1.5' stroke-opacity='0.35' stroke-linecap='round'/%3E%3C/svg%3E");
     border: 0;
     border-radius: 4px;
-    box-shadow: 0 1.2rem 3rem rgba(38, 35, 31, 0.14);
+    clip-path: polygon(
+        /* ── HAUT : gauche → droite ── */
+        0px 3px,        30px 0px,       60px 2px,       90px 0px,       120px 3px,
+        150px 1px,      180px 3px,      210px 0px,      240px 2px,      270px 0px,
+        300px 3px,      330px 1px,      360px 2px,      390px 0px,      420px 3px,
+        450px 1px,      480px 2px,      510px 0px,      540px 3px,      570px 1px,
+        600px 2px,      630px 0px,      660px 3px,      690px 1px,      720px 2px,
+        750px 0px,      780px 3px,      810px 1px,      840px 2px,      870px 0px,
+        900px 3px,      930px 1px,      960px 2px,      990px 0px,      100% 2px,
+
+        /* ── DROITE : haut → bas ── */
+        calc(100% - 2px) 30px,    100% 60px,          calc(100% - 3px) 90px,
+        100% 120px,               calc(100% - 1px) 150px,  100% 180px,
+        calc(100% - 3px) 210px,   100% 240px,         calc(100% - 2px) 270px,
+        100% 300px,               calc(100% - 3px) 330px,  100% 360px,
+        calc(100% - 1px) 390px,   100% 420px,         calc(100% - 2px) 450px,
+        100% 480px,               calc(100% - 3px) 510px,  100% 540px,
+        calc(100% - 1px) 570px,   100% 600px,         calc(100% - 2px) 630px,
+        100% 660px,               calc(100% - 3px) 690px,  100% 720px,
+        calc(100% - 1px) calc(100% - 30px),           100% calc(100% - 2px),
+
+        /* ── BAS : droite → gauche ── */
+        calc(100% - 30px) 100%,         calc(100% - 60px) calc(100% - 2px),
+        calc(100% - 90px) 100%,         calc(100% - 120px) calc(100% - 3px),
+        calc(100% - 150px) 100%,        calc(100% - 180px) calc(100% - 1px),
+        calc(100% - 210px) 100%,        calc(100% - 240px) calc(100% - 2px),
+        calc(100% - 270px) 100%,        calc(100% - 300px) calc(100% - 3px),
+        calc(100% - 330px) 100%,        calc(100% - 360px) calc(100% - 1px),
+        calc(100% - 390px) 100%,        calc(100% - 420px) calc(100% - 2px),
+        calc(100% - 450px) 100%,        calc(100% - 480px) calc(100% - 3px),
+        calc(100% - 510px) 100%,        calc(100% - 540px) calc(100% - 1px),
+        calc(100% - 570px) 100%,        calc(100% - 600px) calc(100% - 2px),
+        calc(100% - 630px) 100%,        calc(100% - 660px) calc(100% - 3px),
+        calc(100% - 690px) 100%,        calc(100% - 720px) calc(100% - 1px),
+        calc(100% - 750px) 100%,        calc(100% - 780px) calc(100% - 2px),
+        calc(100% - 810px) 100%,        calc(100% - 840px) calc(100% - 3px),
+        calc(100% - 870px) 100%,        calc(100% - 900px) calc(100% - 1px),
+        calc(100% - 930px) 100%,        calc(100% - 960px) calc(100% - 2px),
+        calc(100% - 990px) 100%,        0px calc(100% - 1px),
+
+        /* ── GAUCHE : bas → haut ── */
+        0px calc(100% - 30px),    0px calc(100% - 60px),    2px calc(100% - 90px),
+        0px calc(100% - 120px),   3px calc(100% - 150px),   0px calc(100% - 180px),
+        1px calc(100% - 210px),   0px calc(100% - 240px),   3px calc(100% - 270px),
+        0px calc(100% - 300px),   2px calc(100% - 330px),   0px calc(100% - 360px),
+        3px calc(100% - 390px),   0px calc(100% - 420px),   1px calc(100% - 450px),
+        0px calc(100% - 480px),   2px calc(100% - 510px),   0px calc(100% - 540px),
+        3px calc(100% - 570px),   0px calc(100% - 600px),   1px calc(100% - 630px),
+        0px calc(100% - 660px),   2px calc(100% - 690px),   0px calc(100% - 720px),
+        3px calc(100% - 750px),   0px calc(100% - 780px),   1px calc(100% - 810px),
+        0px calc(100% - 840px),   2px calc(100% - 870px),   0px calc(100% - 900px),
+        3px calc(100% - 930px),   0px calc(100% - 960px),   2px 30px
+    );
 }
 
 .excerpt-body {
@@ -31,9 +87,63 @@
     font-size: 1.4rem;
 }
 
-.tag-list {
-    font-size: 2rem;
+.tag-wrapper {
+    display: inline-block;
+    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.4));
 }
+.tag-list {
+    font-size: 1.4rem;
+}
+
+.tag-list a {
+    padding: 0 20px;
+    text-decoration: none;
+    display: inline-block;
+    transform: rotate(2deg);
+    clip-path: polygon(
+        0% 4%,
+        12% 0%,
+        24% 3%,
+        36% 1%,
+        48% 4%,
+        60% 0%,
+        72% 3%,
+        84% 1%,
+        100% 3%,
+
+        98% 18%,
+        100% 38%,
+        98% 58%,
+        100% 78%,
+        98% 98%,
+
+        74% 100%,
+        72% 97%,
+        60% 100%,
+        48% 96%,
+        36% 100%,
+        24% 97%,
+        12% 100%,
+        0% 96%,
+
+        2% 78%,
+        0% 58%,
+        2% 38%,
+        0% 18%
+    );
+}
+
+.tag-list .tag-wrapper:nth-child(10n + 1) a { transform: rotate(-3deg); background-color: #FFFB87;}
+.tag-list .tag-wrapper:nth-child(10n + 2) a { transform: rotate( 1deg); background-color: #6FDDDB;}
+.tag-list .tag-wrapper:nth-child(10n + 3) a { transform: rotate(-2deg); background-color: #FFA8C5;}
+.tag-list .tag-wrapper:nth-child(10n + 4) a { transform: rotate(2deg); background-color: #A8E6CF;}
+.tag-list .tag-wrapper:nth-child(10n + 5) a { transform: rotate(-1deg); background-color: #FFAB40;}
+.tag-list .tag-wrapper:nth-child(10n + 6) a { transform: rotate(3deg); background-color: #C9B1FF;}
+.tag-list .tag-wrapper:nth-child(10n + 7) a { transform: rotate(-1.5deg); background-color: #FFD166;}
+.tag-list .tag-wrapper:nth-child(10n + 8) a { transform: rotate(2.5deg); background-color: #96D4FF;}
+.tag-list .tag-wrapper:nth-child(10n + 9) a { transform: rotate(-2.5deg); background-color: #FFD6A5;}
+.tag-list .tag-wrapper:nth-child(10n + 10) a { transform: rotate(1.5deg); background-color: #B5EAD7;}
+
 
 .chip-list {
     font-size: 2em;

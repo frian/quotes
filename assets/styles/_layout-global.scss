@@ -17,6 +17,10 @@ h1 {
     top: -6px;
 }
 
+input {
+    line-height: var(--page-line-height);
+}
+
 .home-grid h2 {
     position: relative;
     top: -8px;

@@ -36,3 +36,8 @@ a {
 a:hover {
     color: var(--color-accent);
 }
+
+input {
+    font-family: var(--font-ui);
+    font-size: 1.4rem;
+}

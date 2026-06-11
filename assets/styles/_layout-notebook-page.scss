@@ -1,5 +1,8 @@
 .notebook-page {
     padding-top: 12px;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    min-height: 96vh;
 }
 
 .excerpt-card {
@@ -15,6 +18,7 @@
 .excerpt-meta {
     position: relative;
     top: -6px;
+    margin-bottom: var(--page-rhythm);
 }
 
 .home-hero {
@@ -49,7 +53,14 @@
 
 .tag-list {
     position: relative;
-    top: -8px;
+    top: -14px;
+}
+
+.tag-list a {
+    padding: 0 20px;
+    text-decoration: none;
+    display: inline-block;
+    transform: rotate(2deg);
 }
 
 .chip-list {

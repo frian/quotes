@@ -1,3 +1,10 @@
+.site-header-wrapper {
+    // filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+    // filter: drop-shadow(0px 5px 15px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.23));
+    transform: rotate(-0.1deg) translateX(5px);
+}
+
 .site-header {
     background-color: var(--color-header);
     background-repeat: repeat;
@@ -5,6 +12,43 @@
     background-position: 0 6px;
     border: 0;
     border-radius: 4px;
+    padding: 10px;
+    clip-path: polygon(
+        /* ── HAUT : gauche → droite ── */
+        0px 3px,        30px 0px,       60px 2px,       90px 0px,       120px 3px,
+        150px 1px,      180px 3px,      210px 0px,      240px 2px,      270px 0px,
+
+        /* ── DROITE : haut → bas ── */
+        calc(100% - 2px) 30px,    100% 60px,          calc(100% - 3px) 90px,
+        100% 120px,               calc(100% - 1px) 150px,  100% 180px,
+        calc(100% - 3px) 210px,   100% 240px,         calc(100% - 2px) 270px,
+        100% 300px,               calc(100% - 3px) 330px,  100% 360px,
+        calc(100% - 1px) 390px,   100% 420px,         calc(100% - 2px) 450px,
+        100% 480px,               calc(100% - 3px) 510px,  100% 540px,
+        calc(100% - 1px) 570px,   100% 600px,         calc(100% - 2px) 630px,
+        100% 660px,               calc(100% - 3px) 690px,  100% 720px,
+        calc(100% - 1px) calc(100% - 30px),           100% calc(100% - 2px),
+
+        /* ── BAS : droite → gauche ── */
+        calc(100% - 30px) 100%,         calc(100% - 60px) calc(100% - 2px),
+        calc(100% - 90px) 100%,         calc(100% - 120px) calc(100% - 3px),
+        calc(100% - 150px) 100%,        calc(100% - 180px) calc(100% - 1px),
+        calc(100% - 210px) 100%,        calc(100% - 240px) calc(100% - 2px),
+        calc(100% - 270px) 100%,        calc(100% - 300px) calc(100% - 3px),
+
+        /* ── GAUCHE : bas → haut ── */
+        3px calc(100% - 30px),    0px calc(100% - 60px),    2px calc(100% - 90px),
+        0px calc(100% - 120px),   3px calc(100% - 150px),   0px calc(100% - 180px),
+        1px calc(100% - 210px),   0px calc(100% - 240px),   3px calc(100% - 270px),
+        0px calc(100% - 300px),   2px calc(100% - 330px),   0px calc(100% - 360px),
+        3px calc(100% - 390px),   0px calc(100% - 420px),   1px calc(100% - 450px),
+        0px calc(100% - 480px),   2px calc(100% - 510px),   0px calc(100% - 540px),
+        3px calc(100% - 570px),   0px calc(100% - 600px),   1px calc(100% - 630px),
+        0px calc(100% - 660px),   2px calc(100% - 690px),   0px calc(100% - 720px),
+        3px calc(100% - 750px),   0px calc(100% - 780px),   1px calc(100% - 810px),
+        0px calc(100% - 840px),   2px calc(100% - 870px),   0px calc(100% - 900px),
+        3px calc(100% - 930px),   0px calc(100% - 960px),   2px 30px
+    );
 }
 
 .site-nav a {
