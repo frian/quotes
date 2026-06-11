@@ -19,6 +19,10 @@ class Tag
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
+    #[ORM\ManyToOne(targetEntity: Color::class, inversedBy: 'tags')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Color $color = null;
+
     /**
      * @var Collection<int, SongExcerpt>
      */
@@ -43,6 +47,18 @@ class Tag
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getColor(): ?Color
+    {
+        return $this->color;
+    }
+
+    public function setColor(?Color $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

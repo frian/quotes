@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Album;
 use App\Entity\Artist;
+use App\Entity\Color;
 use App\Entity\Song;
 use App\Entity\SongExcerpt;
 use App\Entity\Tag;
@@ -11,6 +12,7 @@ use App\Form\ExcerptImportType;
 use App\Form\SongExcerptType;
 use App\Repository\AlbumRepository;
 use App\Repository\ArtistRepository;
+use App\Repository\ColorRepository;
 use App\Repository\TagRepository;
 use App\Service\ExcerptCsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,12 +34,14 @@ class AdminExcerptController extends AbstractController
         EntityManagerInterface $entityManager,
         ArtistRepository $artistRepository,
         AlbumRepository $albumRepository,
+        ColorRepository $colorRepository,
         TagRepository $tagRepository,
     ): Response
     {
         $form = $this->createForm(SongExcerptType::class, null, $this->createFormOptions(
             $artistRepository,
             $albumRepository,
+            $colorRepository,
             $tagRepository,
         ));
         $form->handleRequest($request);
@@ -184,12 +188,14 @@ class AdminExcerptController extends AbstractController
         EntityManagerInterface $entityManager,
         ArtistRepository $artistRepository,
         AlbumRepository $albumRepository,
+        ColorRepository $colorRepository,
         TagRepository $tagRepository,
     ): Response
     {
         $form = $this->createForm(SongExcerptType::class, $this->createFormData($excerpt), $this->createFormOptions(
             $artistRepository,
             $albumRepository,
+            $colorRepository,
             $tagRepository,
             [
             'submit_label' => 'Mettre à jour l’extrait',
@@ -263,7 +269,7 @@ class AdminExcerptController extends AbstractController
         }
 
         foreach ($this->parseTagNames((string) ($data['newTagNames'] ?? '')) as $tagName) {
-            $excerpt->addTag($this->findOrCreateTag($entityManager, $tagName));
+            $excerpt->addTag($this->findOrCreateTag($entityManager, $tagName, $data['newTagColor'] ?? null));
         }
     }
 
@@ -288,6 +294,7 @@ class AdminExcerptController extends AbstractController
             'position' => $excerpt->getPosition(),
             'tags' => $excerpt->getTags()->toArray(),
             'newTagNames' => null,
+            'newTagColor' => null,
             'note' => $excerpt->getNote(),
         ];
     }
@@ -300,12 +307,14 @@ class AdminExcerptController extends AbstractController
     private function createFormOptions(
         ArtistRepository $artistRepository,
         AlbumRepository $albumRepository,
+        ColorRepository $colorRepository,
         TagRepository $tagRepository,
         array $extraOptions = [],
     ): array {
         return array_replace([
             'albums' => $albumRepository->findAllOrderedByArtistAndTitle(),
             'artists' => $artistRepository->findAllOrderedByName(),
+            'colors' => $colorRepository->findBy([], ['name' => 'ASC']),
             'tags' => $tagRepository->findAllOrderedByName(),
         ], $extraOptions);
     }
@@ -466,7 +475,7 @@ class AdminExcerptController extends AbstractController
         return $song;
     }
 
-    private function findOrCreateTag(EntityManagerInterface $entityManager, string $name): Tag
+    private function findOrCreateTag(EntityManagerInterface $entityManager, string $name, ?Color $color = null): Tag
     {
         $name = $this->normalizeCatalogText($name);
         $tag = $this->findTagByNormalizedName($entityManager, $name);
@@ -475,7 +484,9 @@ class AdminExcerptController extends AbstractController
             return $tag;
         }
 
-        $tag = (new Tag())->setName($name);
+        $tag = (new Tag())
+            ->setName($name)
+            ->setColor($color);
         $entityManager->persist($tag);
         $entityManager->flush();
 

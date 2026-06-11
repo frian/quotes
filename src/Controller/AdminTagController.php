@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Color;
 use App\Entity\Tag;
 use App\Form\TagType;
 use App\Repository\TagRepository;
@@ -26,11 +27,12 @@ class AdminTagController extends AbstractController
     ): Response {
         $form = $this->createForm(TagType::class, [
             'name' => $tag->getName(),
+            'color' => $tag->getColor(),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var array{name: string} $data */
+            /** @var array{name: string, color: ?Color} $data */
             $data = $form->getData();
             $name = $this->normalizeTagName($data['name']);
 
@@ -40,6 +42,7 @@ class AdminTagController extends AbstractController
                 $form->get('name')->addError(new FormError('Ce tag existe déjà, choisis plutôt la fiche existante.'));
             } else {
                 $tag->setName($name);
+                $tag->setColor($data['color']);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Le tag a été mis à jour.');

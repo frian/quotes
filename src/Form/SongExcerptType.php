@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Album;
 use App\Entity\Artist;
+use App\Entity\Color;
 use App\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -120,6 +121,14 @@ class SongExcerptType extends AbstractType
                 'required' => false,
                 'help' => 'Tu peux ajouter plusieurs tags avec des virgules.',
             ])
+            ->add('newTagColor', EntityType::class, [
+                'label' => 'Couleur des nouveaux tags',
+                'class' => Color::class,
+                'choices' => $options['colors'],
+                'choice_label' => static fn (Color $color): string => sprintf('%s (%s)', $color->getName(), $color->getHexCode()),
+                'placeholder' => 'Choisir une couleur',
+                'required' => false,
+            ])
             ->add('note', TextareaType::class, [
                 'label' => 'Note personnelle',
                 'required' => false,
@@ -137,6 +146,7 @@ class SongExcerptType extends AbstractType
         $resolver->setDefaults([
             'albums' => [],
             'artists' => [],
+            'colors' => [],
             'data_class' => null,
             'submit_label' => 'Ajouter l’extrait',
             'tags' => [],
@@ -144,6 +154,7 @@ class SongExcerptType extends AbstractType
 
         $resolver->setAllowedTypes('albums', 'array');
         $resolver->setAllowedTypes('artists', 'array');
+        $resolver->setAllowedTypes('colors', 'array');
         $resolver->setAllowedTypes('submit_label', 'string');
         $resolver->setAllowedTypes('tags', 'array');
     }
