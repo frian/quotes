@@ -30,7 +30,7 @@
             Tags : 
             {% for tag in excerpt.tags %}
                 <div class="tag-wrapper">
-                    <a href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
+                    <a class="{{ tag.color.class }}" href="{{ path('tag_show', { id: tag.id }) }}">{{ tag.name }}</a>
                 </div>
             {% endfor %}
         </nav>

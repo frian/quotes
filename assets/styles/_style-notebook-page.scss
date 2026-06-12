@@ -133,16 +133,16 @@
     );
 }
 
-.tag-list .tag-wrapper:nth-child(10n + 1) a { transform: rotate(-3deg); background-color: #FFFB87;}
-.tag-list .tag-wrapper:nth-child(10n + 2) a { transform: rotate( 1deg); background-color: #6FDDDB;}
-.tag-list .tag-wrapper:nth-child(10n + 3) a { transform: rotate(-2deg); background-color: #FFA8C5;}
-.tag-list .tag-wrapper:nth-child(10n + 4) a { transform: rotate(2deg); background-color: #A8E6CF;}
-.tag-list .tag-wrapper:nth-child(10n + 5) a { transform: rotate(-1deg); background-color: #FFAB40;}
-.tag-list .tag-wrapper:nth-child(10n + 6) a { transform: rotate(3deg); background-color: #C9B1FF;}
-.tag-list .tag-wrapper:nth-child(10n + 7) a { transform: rotate(-1.5deg); background-color: #FFD166;}
-.tag-list .tag-wrapper:nth-child(10n + 8) a { transform: rotate(2.5deg); background-color: #96D4FF;}
-.tag-list .tag-wrapper:nth-child(10n + 9) a { transform: rotate(-2.5deg); background-color: #FFD6A5;}
-.tag-list .tag-wrapper:nth-child(10n + 10) a { transform: rotate(1.5deg); background-color: #B5EAD7;}
+.tag-list .tag-wrapper:nth-child(10n + 1) a { transform: rotate(-3deg);}
+.tag-list .tag-wrapper:nth-child(10n + 2) a { transform: rotate( 1deg);}
+.tag-list .tag-wrapper:nth-child(10n + 3) a { transform: rotate(-2deg);}
+.tag-list .tag-wrapper:nth-child(10n + 4) a { transform: rotate(2deg);}
+.tag-list .tag-wrapper:nth-child(10n + 5) a { transform: rotate(-1deg);}
+.tag-list .tag-wrapper:nth-child(10n + 6) a { transform: rotate(3deg);}
+.tag-list .tag-wrapper:nth-child(10n + 7) a { transform: rotate(-1.5deg);}
+.tag-list .tag-wrapper:nth-child(10n + 8) a { transform: rotate(2.5deg);}
+.tag-list .tag-wrapper:nth-child(10n + 9) a { transform: rotate(-2.5deg);}
+.tag-list .tag-wrapper:nth-child(10n + 10) a { transform: rotate(1.5deg);}
 
 
 .chip-list {
